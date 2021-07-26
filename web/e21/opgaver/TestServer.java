@@ -29,7 +29,7 @@ public class TestServer {
      */
     public static void updateTestServer() {
         if(updateAvailable()) {
-            try (ReadableByteChannel rbc = Channels.newChannel(new URL("https://tildeweb.au.dk/au531793/dintprog/e20/opgaver/TestServer.java").openStream());
+            try (ReadableByteChannel rbc = Channels.newChannel(new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e21/opgaver/TestServer.java").openStream());
                  FileOutputStream fos = new FileOutputStream("TestServer.java")) {
                 fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
                 System.out.println("TestServeren er blevet opdateret :)");
@@ -66,7 +66,7 @@ public class TestServer {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu-MM-dd");
 
         try(InputStream local = new FileInputStream(new File("TestServer.java"));
-            InputStream online = (new URL("https://tildeweb.au.dk/au531793/dintprog/e20/opgaver/TestServer.java")).openStream()) {
+            InputStream online = (new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e21/opgaver/TestServer.java")).openStream()) {
             LocalDate localDate = LocalDate.parse(parseVersionDate(local), dtf);
             LocalDate onlineDate = LocalDate.parse(parseVersionDate(online), dtf);
 
