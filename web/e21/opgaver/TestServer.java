@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author  Nikolaj I. Schwartzbach & Asger Phillip Andersen
- * @version 2021-06-30
+ * @version 2021-07-27
  */
 public class TestServer {
     private TestServer() {}
@@ -76,7 +76,7 @@ public class TestServer {
         } catch(FileNotFoundException e) {
             System.out.println("Kan finde lokale fil.\nKontakt en adm. instruktor tak :)");
         } catch(IOException e) {
-            System.out.println("Kan ikke lÃ¦se den lokale fil.\nKontakt en adm. instruktor tak :)");
+            System.out.println("Kan ikke læse den lokale fil.\nKontakt en adm. instruktor tak :)");
         }
 
         return false;
@@ -362,8 +362,8 @@ public class TestServer {
             // Get user input
             Scanner s = new Scanner(System.in);
 
-            System.out.print("FÃƒÆ’Ã‚Â¸rste gang du uploader et projekt til testserveren skal du indtaste dit auID og en adgangskode.\n" +
-                    "Begge dele huskes i din projektmappe, sÃƒÆ’Ã‚Â¥ledes at du ikke behÃƒÆ’Ã‚Â¸ver at indtaste dem ved senere uploads af projektet.\n\n" +
+            System.out.print("Første gang du uploader et projekt til testserveren skal du indtaste dit auID og en adgangskode.\n" +
+                    "Begge dele huskes i din projektmappe, således at du ikke behøver at indtaste dem ved senere uploads af projektet.\n\n" +
                     "Du kan skaffe dig en adgangskode via linket: https://dintprog.cs.au.dk/reset.php\n\n" +
                     "Det er samme adgangskode, der anvendes til quizserveren og til testserveren.\n\n" +
                     "Indtast auID: \n> ");
@@ -426,7 +426,7 @@ public class TestServer {
                 System.err.println("Unable to download file: "+file+". Reason: "+e.getMessage());
             }
 
-        JOptionPane.showMessageDialog(null, "Download af filer for version '"+version+"' blev gennemfÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¸rt succesfuldt. Det kan vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¦re nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¸dvendigt at genstarte BlueJ for at se de nye filer.", "Filer downloadet succesfuldt.", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Download af filer for version '"+version+"' blev gennemført succesfuldt. Det kan være nødvendigt at genstarte BlueJ for at se de nye filer.", "Filer downloadet succesfuldt.", JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
