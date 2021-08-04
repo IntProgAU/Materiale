@@ -1,4 +1,3 @@
 # IntProg-undervisningsmateriale
 
-
-dwdwad dwa 
+Undervisningsmateriale til intprog.
