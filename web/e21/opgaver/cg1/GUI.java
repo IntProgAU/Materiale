@@ -74,11 +74,10 @@ public class GUI {
     private JCheckBox random, greedy, smart;
     
     /** Textfields */
-    private JTextField tollSizeTextField, muggingTextField;
-    private JTextField minLossTextField, maxLossTextField;                                  //+
+    private JTextField tollSizeTextField, robberyTextField;
     
     /** Buttons */
-    private JButton optionsButton, newGameButton, pauseResumeButton, abortButton, playLogButton, saveLogButton;
+    private JButton optionsButton, newGameButton, pauseResumeButton, abortButton;
     
     /** Reference to the Game instance */
     private Game game;
@@ -110,6 +109,9 @@ public class GUI {
     private boolean usedKeyboard = false;
     
     private boolean optionsShowing = false;
+
+    private int CTRL = Event.CTRL_MASK,								// CTRL
+    		    CTRL_SHIFT = Event.CTRL_MASK | Event.SHIFT_MASK;	// CTRL+SHIFT
     
     /**
      * Constructor for the GUI class.
@@ -295,7 +297,7 @@ public class GUI {
         
             //Text-fields
             tollSizeTextField.setText(""+game.getSettings().getTollToBePaid());
-            muggingTextField.setText(""+game.getSettings().getRisk());                          //+
+            robberyTextField.setText(""+game.getSettings().getRisk());    
         
             //Game speed
             speed = game.getSettings().getGameSpeed();
@@ -386,7 +388,7 @@ public class GUI {
     public JPanel createButtonPanel(){
         //Initialize the JPanel, using a GridLayout
         JPanel buttons = new JPanel();
-        buttons.setLayout(new GridLayout(2,2));                                     //+ (1 ændret til 2)
+        buttons.setLayout(new GridLayout(1,4));                                  
         
         //Instantiate the 'New'-button
         newGameButton = new JButton("New game");
@@ -411,7 +413,7 @@ public class GUI {
         optionsButton = new JButton("Options...");
         optionsButton.setEnabled(false);
         optionsButton.addActionListener(e -> showOptions());
-        buttons.add(optionsButton);                                                                                                               //+  
+        buttons.add(optionsButton); 
         
         //Return the JPanel
         return buttons;
@@ -426,11 +428,11 @@ public class GUI {
         game.getSettings().setActive(1, greedy.isSelected());
         game.getSettings().setActive(2, smart.isSelected());
         
-        //Toll size & mugging
-        int tollSize, riskRob;
+        //Toll size & robbery
+        int tollSize, riskRob = 0;
         try{
             tollSize = Integer.parseInt(tollSizeTextField.getText());
-            riskRob  = Integer.parseInt(muggingTextField.getText());
+            riskRob  = Integer.parseInt(robberyTextField.getText());
             if(tollSize < 0 || riskRob < 0 || tollSize > 50 || riskRob > 50){
                 JOptionPane.showMessageDialog(mainFrame, "'Toll size' and 'Risk rob' must be between 0 and 50.", "Malformed input", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -532,14 +534,14 @@ public class GUI {
         tollAndRobberyPanel.add(percTollSize);
                 
         //Rob risk
-        JLabel muggingLabel = new JLabel("Risk of robbery:");                       
-        tollAndRobberyPanel.add(muggingLabel);
+        JLabel robberyLabel = new JLabel("Risk of robbery:");                       
+        tollAndRobberyPanel.add(robberyLabel);
 
-        muggingTextField = new JTextField("20", 10);
-        tollAndRobberyPanel.add(muggingTextField);
+        robberyTextField = new JTextField("20", 10);
+        tollAndRobberyPanel.add(robberyTextField);
 
-        JLabel percMugging = new JLabel("% in [0,50]");
-        tollAndRobberyPanel.add(percMugging);
+        JLabel percrobbery = new JLabel("% in [0,50]");
+        tollAndRobberyPanel.add(percrobbery);
         
         
         //Speed options

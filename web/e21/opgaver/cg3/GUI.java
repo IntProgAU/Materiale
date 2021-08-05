@@ -29,8 +29,7 @@ public class GUI {
     private JCheckBox random, greedy, smart;                  // Check boxes for active players.
     private JTextField tollSizeTextField, robberyTextField;   // Textfields in Settings dialog box.
     private JButton optionsButton, newGameButton,
-    pauseResumeButton, abortButton,
-    playLogButton, saveLogButton;                             		// Buttons for control of game
+    pauseResumeButton, abortButton;                             		// Buttons for control of game
     private Game game;                                        		// Reference to the Game object.
     private int stepDelay = 500;                              		// Delay in ms between subsequent frames.
     public final int WIDTH = 520, HEIGHT = 635;               		// Width and height of the inner window, in pixels.
@@ -346,7 +345,7 @@ public class GUI {
         game.getSettings().setActive(2, smart.isSelected());
 
         // Toll size & robbery
-        int tollSize, riskRob;
+        int tollSize, riskRob = 0;
         try{
             tollSize = Integer.parseInt(tollSizeTextField.getText());
             riskRob  = Integer.parseInt(robberyTextField.getText());
