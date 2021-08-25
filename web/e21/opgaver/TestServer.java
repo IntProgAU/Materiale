@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author  Nikolaj I. Schwartzbach & Asger Phillip Andersen
- * @version 2021-07-27
+ * @version 2021-08-25
  */
 public class TestServer {
     private TestServer() {}
@@ -27,7 +27,7 @@ public class TestServer {
      * Downloads any available updates to the testserver file.
      * @throws IOException
      */
-    public static void updateTestServer() {
+    private static void updateTestServer() {
         if(updateAvailable()) {
             try (ReadableByteChannel rbc = Channels.newChannel(new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e21/opgaver/TestServer.java").openStream());
                  FileOutputStream fos = new FileOutputStream("TestServer.java")) {
@@ -48,7 +48,7 @@ public class TestServer {
     /**
      * Checks if there is an update available, for the testserver.
      */
-    public static void checkForUpdates() {
+    private static void checkForUpdates() {
         boolean updateAvailable = updateAvailable();
         if(updateAvailable) {
             System.out.println("Der er en ny version af TestServeren. Kald updateTestServer metoden, for at opdatere");
@@ -108,6 +108,12 @@ public class TestServer {
      * @param exercise  one of: CG1, CG3, CG5
      */
     public static void download(String exercise) throws IOException {
+        if(updateAvailable()) {
+            updateTestServer();
+            System.out.println("Du havde ikke den nyeste version af testserveren, men den er blevet opdateret nu.\nPrøv igen, og genstart eventuelt BlueJ.");
+            return;
+        }
+
         String ex = exercise.toLowerCase();
 
         switch(ex) {
@@ -135,6 +141,12 @@ public class TestServer {
      * @param exercise   Short name of exercise.
      */
     public static void testAndOpenInBrowser(String exercise) throws IOException, URISyntaxException {
+        if(updateAvailable()) {
+            updateTestServer();
+            System.out.println("Du havde ikke den nyeste version af testserveren, men den er blevet opdateret nu.\nGenstart dit projekt, og prøv igen.");
+            return;
+        }
+
         String str = test(exercise);
         if(str.contains("Link: ")){
             str = str.substring(str.indexOf("Link: ")+6);
@@ -147,6 +159,12 @@ public class TestServer {
      * @param exercise   Short name of exercise.
      */
     public static String test(String exercise) throws IOException {
+        if(updateAvailable()) {
+            updateTestServer();
+            System.out.println("Du havde ikke den nyeste version af testserveren, men den er blevet opdateret nu.\nGenstart dit projekt, og prøv igen.");
+            return;
+        }
+
         String ex = exercise.toLowerCase();
         // Files to be uploaded
         String[] files = null;
