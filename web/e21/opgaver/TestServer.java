@@ -143,8 +143,7 @@ public class TestServer {
     public static void testAndOpenInBrowser(String exercise) throws IOException, URISyntaxException {
         if(updateAvailable()) {
             updateTestServer();
-            System.out.println("Du havde ikke den nyeste version af testserveren, men den er blevet opdateret nu.\nGenstart dit projekt, og prøv igen.");
-            return;
+			System.out.println("Du havde ikke den nyeste version af testserveren, men den er blevet opdateret nu.\nPrøv igen, og genstart eventuelt BlueJ.");            return;
         }
 
         String str = test(exercise);
@@ -161,8 +160,7 @@ public class TestServer {
     public static String test(String exercise) throws IOException {
         if(updateAvailable()) {
             updateTestServer();
-            System.out.println("Du havde ikke den nyeste version af testserveren, men den er blevet opdateret nu.\nGenstart dit projekt, og prøv igen.");
-            return;
+			System.out.println("Du havde ikke den nyeste version af testserveren, men den er blevet opdateret nu.\nPrøv igen, og genstart eventuelt BlueJ.");            return "";
         }
 
         String ex = exercise.toLowerCase();
