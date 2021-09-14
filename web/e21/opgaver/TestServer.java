@@ -181,8 +181,8 @@ public class TestServer {
                 files = new String[] {"Game"}; break;
 
             // Turtle
-            case "Turtle1":
-            case "Turtle2":
+            case "turtle1":
+            case "turtle2":
                 files = new String[] {"Actor", "Canvas", "Turtle"}; break;
 
             // 2016
