@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author  Nikolaj I. Schwartzbach & Asger Phillip Andersen
- * @version 2021-08-25
+ * @version 2021-09-14
  */
 public class TestServer {
     private TestServer() {}
