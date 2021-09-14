@@ -180,6 +180,11 @@ public class TestServer {
             case "dc4-3":
                 files = new String[] {"Game"}; break;
 
+            // Turtle
+            case "Turtle1":
+            case "Turtle2":
+                fiels = new String[] {"Actor", "Canvas", "Turtle"}; break;
+
             // 2016
             case "basketplayer":
                 files = new String[] {"BasketPlayer","BasketTeam"}; break;
