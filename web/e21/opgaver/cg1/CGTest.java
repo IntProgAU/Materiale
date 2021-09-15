@@ -28,7 +28,7 @@ public class CGTest
      *
      * Called before every test case method.
      */
-    @Before
+    @BeforeEach
     public void setUp()
     {
         // Create countries
@@ -68,5 +68,4 @@ public class CGTest
         country2.addRoads(cityF, cityD, 3);
         country2.addRoads(cityF, cityG, 6);
     }
-
 }
