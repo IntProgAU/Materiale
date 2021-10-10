@@ -291,7 +291,7 @@ public class TestServer {
             case "sheep":
                 files = new String[]{ "Sheep", "Farm" }; break;
             case "tiger":
-                files = new String[]{ "Tiger", "Savannah" }; break;
+                files = new String[]{ "Tiger", "Forest" }; break;
 
             // Videos
             case "phone":
