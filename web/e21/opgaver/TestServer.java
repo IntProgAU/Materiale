@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author  Nikolaj I. Schwartzbach & Asger Phillip Andersen
- * @version 2021-09-20
+ * @version 2021-10-10
  */
 public class TestServer {
     private TestServer() {}
@@ -291,7 +291,7 @@ public class TestServer {
             case "sheep":
                 files = new String[]{ "Sheep", "Farm" }; break;
             case "tiger":
-                files = new String[]{ "Tiger", "Savannah" }; break;
+                files = new String[]{ "Tiger", "Forest" }; break;
 
             // Videos
             case "phone":
