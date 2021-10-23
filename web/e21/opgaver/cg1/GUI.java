@@ -72,14 +72,16 @@ public class GUI {
     /** Maps which keys are being held down at this step */
     private Map<Integer, Boolean> press = new HashMap<>();
     
+    private boolean hasGameStarted = false;
+    
     private double currentDirection = 0;
     
     private boolean usedKeyboard = false;
     
     private boolean optionsShowing = false;
 
-    private int CTRL = Event.CTRL_MASK,								// CTRL
-    		    CTRL_SHIFT = Event.CTRL_MASK | Event.SHIFT_MASK;	// CTRL+SHIFT
+    private int CTRL = Event.CTRL_MASK,                                // CTRL
+                CTRL_SHIFT = Event.CTRL_MASK | Event.SHIFT_MASK;    // CTRL+SHIFT
     
     /**
      * Constructor for the GUI class.
@@ -104,6 +106,7 @@ public class GUI {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //Click on cities
+                System.out.println("Clicked at: " + e.getX() + ", " + e.getY());
                 for(Country country : game.getCountries()){
                     for(City c : country.getCities()){
                         Point p = game.getPosition(c);
@@ -131,7 +134,7 @@ public class GUI {
 
             @Override
             public void mouseMoved(MouseEvent e){
-                
+                System.out.println("Mouse: " + e.getX() + ", " + e.getY());
                 //Assume not hovering 
                 int i=0;
                 panel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -145,6 +148,7 @@ public class GUI {
                             panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
                             i++;
                             hover = c;
+                            System.out.println(p);
                             break;
                         }
                     }
@@ -205,36 +209,7 @@ public class GUI {
         panel.addKeyListener(kl);
         
         //Initialize the game timer
-        timer = new Timer(frameDelay, e->{
-            Player p = game.getGUIPlayer();
-            if(usedKeyboard && p.getPosition().hasArrived()){
-                City playerCity = p.getPosition().getTo();
-                
-                City best = null;
-                double bestAngle = 2*Math.PI;
-                Point posPlayer = game.getPosition(playerCity);
-                for(Road r : p.getCountry().getRoads(playerCity)){
-                    Point posCity = game.getPosition(r.getTo());
-                    double cityAngle = Math.atan2(-posCity.y + posPlayer.y, posCity.x - posPlayer.x);
-                    double newAngle = angleDiff(cityAngle, currentDirection);
-                    if(newAngle < bestAngle){
-                        best = r.getTo();
-                        bestAngle = newAngle;
-                    }
-                }
-                if(best != null && bestAngle < Math.PI/4){
-                    game.clickCity(best);
-                }
-                
-                currentDirection = -1;
-                usedKeyboard = false;
-            }
-            game.step();
-            optionsButton.setEnabled(!game.ongoing());
-            pauseResumeButton.setEnabled(game.ongoing());
-            abortButton.setEnabled(game.ongoing());
-            mainFrame.repaint();
-        });
+        timer = createDefaultTimer();
 
         //Apply existing settings to current game
         applyExistingSettings();
@@ -338,10 +313,49 @@ public class GUI {
         timer.stop(); 
         
         //Hide the main window
-        mainFrame.setVisible(false); 
+        //mainFrame.setVisible(false); 
         
         //Show the options window
         options.setVisible(true);
+    }
+    
+    private Timer createDefaultTimer() {
+        Timer t = new Timer(frameDelay, e->{
+            Player p = game.getGUIPlayer();
+            if(usedKeyboard && p.getPosition().hasArrived()){
+                City playerCity = p.getPosition().getTo();
+                
+                City best = null;
+                double bestAngle = 2*Math.PI;
+                Point posPlayer = game.getPosition(playerCity);
+                for(Road r : p.getCountry().getRoads(playerCity)){
+                    Point posCity = game.getPosition(r.getTo());
+                    double cityAngle = Math.atan2(-posCity.y + posPlayer.y, posCity.x - posPlayer.x);
+                    double newAngle = angleDiff(cityAngle, currentDirection);
+                    if(newAngle < bestAngle){
+                        best = r.getTo();
+                        bestAngle = newAngle;
+                    }
+                }
+                if(best != null && bestAngle < Math.PI/4){
+                    game.clickCity(best);
+                }
+                
+                currentDirection = -1;
+                usedKeyboard = false;
+            }
+            game.step();
+            updateButtonsAvailabillity();
+            mainFrame.repaint();
+        });
+        
+        return t;
+    }
+    
+    private void updateButtonsAvailabillity() {
+            optionsButton.setEnabled(!game.ongoing());
+            pauseResumeButton.setEnabled(game.ongoing());
+            abortButton.setEnabled(game.ongoing());
     }
     
     public void newGame() {
@@ -374,7 +388,10 @@ public class GUI {
         
         //Add the 'Abort game'-button
         abortButton = new JButton("Abort game");
-        abortButton.addActionListener(e -> game.abort());
+        abortButton.addActionListener(e -> {
+            game.abort();
+            updateButtonsAvailabillity();
+        });
         buttons.add(abortButton);
 
         //Add the 'Options...'-button
@@ -388,7 +405,8 @@ public class GUI {
     }
     
     private void applyOptions() {
-        optionsShowing = false;
+        //optionsShowing = false;
+        options.dispatchEvent(new WindowEvent(options, WindowEvent.WINDOW_CLOSING));
         game.reset();
         
         //Enabled players
@@ -564,7 +582,9 @@ public class GUI {
         frame.addWindowListener(new WindowAdapter() {
            public void windowClosing(WindowEvent e){
                optionsShowing = false;
-               game.reset();
+               //Why is this code here? Shouldn't the options do nothing, if closed on the 'x' button??
+               // - Asger
+               /*game.reset();
                mainFrame.setVisible(false);
                mainFrame.setVisible(true);
                mainFrame.repaint();
@@ -580,7 +600,7 @@ public class GUI {
                if(sonicButton.isSelected())
                    speed = 4;
                 
-               setSpeed(speed);
+               setSpeed(speed);*/
            }
         });
         frame.setResizable(false);
@@ -633,9 +653,10 @@ public class GUI {
             JOptionPane.showMessageDialog(null, "'map.png' does not exist in the current project. Game closing.", "Unable to start NordicTraveller", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        new GUI().startGUI();
+        GUI g = new GUI();
+        g.game.abort();
+        g.startGUI();
     }
-
 }
 /**
  * This class models the JPanel upon which the graphics are actually drawn.
@@ -713,7 +734,7 @@ class WorldPanel extends JPanel {
 
         // Get the Graphics2D object and enable anti-aliasing
         Graphics2D g2d = (Graphics2D) g;
-        g2d.scale(getWidth() / 500.0, getHeight() / 635.0);
+        //g2d.scale(getWidth() / 500.0, getHeight() / 635.0);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setStroke(STROKE_DEFAULT);
 
@@ -818,6 +839,8 @@ class WorldPanel extends JPanel {
             drawPlayer(g2d, player, true);
         }
 
+        // Draw test objects
+        //drawTests(g2d);
     }
 
     /**
@@ -845,6 +868,41 @@ class WorldPanel extends JPanel {
 
         for(int i=0; i<r.getLength(); i++)
             drawRoadDot(g2d, r, i);
+    }
+    
+    private void drawTests(Graphics2D g2d) {
+        int radius = MIN_CIRCLE_RADIUS;
+        Ellipse2D.Double shape = null;
+        
+        shape = new Ellipse2D.Double(0-radius,0-radius, 2*radius, 2*radius);
+        g2d.setColor(Color.BLACK);
+        g2d.fill(shape);
+        g2d.setColor(COLOR_CITY_STROKE);
+        g2d.draw(shape);
+        
+        shape = new Ellipse2D.Double(500-radius,0-radius, 2*radius, 2*radius);
+        g2d.setColor(Color.BLACK);
+        g2d.fill(shape);
+        g2d.setColor(COLOR_CITY_STROKE);
+        g2d.draw(shape);
+        
+        shape = new Ellipse2D.Double(0-radius,635-radius, 2*radius, 2*radius);
+        g2d.setColor(Color.BLACK);
+        g2d.fill(shape);
+        g2d.setColor(COLOR_CITY_STROKE);
+        g2d.draw(shape);
+        
+        shape = new Ellipse2D.Double(500-radius,635-radius, 2*radius, 2*radius);
+        g2d.setColor(Color.BLACK);
+        g2d.fill(shape);
+        g2d.setColor(COLOR_CITY_STROKE);
+        g2d.draw(shape);
+        
+        shape = new Ellipse2D.Double(382,396, 2*radius, 2*radius);
+        g2d.setColor(Color.BLACK);
+        g2d.fill(shape);
+        g2d.setColor(COLOR_CITY_STROKE);
+        g2d.draw(shape);
     }
 
     /**
