@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author  Nikolaj I. Schwartzbach & Asger Phillip Andersen
- * @version 2021-10-11
+ * @version 2021-10-12
  */
 public class TestServer {
     private TestServer() {}
@@ -394,6 +394,8 @@ public class TestServer {
             System.out.print("\nIndtast adgangskode: \n> ");
             code = s.nextLine();
 
+            s.close();
+
             // Save information for next time
             PrintWriter pw = new PrintWriter("upload-data.dat");
             pw.println(auID + " " + code);
@@ -463,6 +465,7 @@ public class TestServer {
         ReadableByteChannel rbc = Channels.newChannel(website.openStream());
         FileOutputStream fos = new FileOutputStream(dest);
         fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        fos.close();
     }
 
     /**
