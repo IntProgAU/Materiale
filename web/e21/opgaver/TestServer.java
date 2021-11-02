@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author  Nikolaj I. Schwartzbach & Asger Phillip Andersen
- * @version 2021-10-10
+ * @version 2021-10-11
  */
 public class TestServer {
     private TestServer() {}
@@ -401,7 +401,7 @@ public class TestServer {
         }
 
         // Set meta information
-        arguments.put("h",ex.replace("dc3-1","dc3a").replace("dc3-4","dc3b").replace("dc4-1","dc4a").replace("dc4-2","dc4b").replace("dc4-2","dc4c"));
+        arguments.put("h",ex.replace("dc3-1","dc3a").replace("dc3-4","dc3b").replace("dc4-1","dc4a").replace("dc4-2","dc4b").replace("dc4-3","dc4c"));
         arguments.put("auID",auID);
         arguments.put("code",code);
 
