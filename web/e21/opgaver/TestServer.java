@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author  Nikolaj I. Schwartzbach & Asger Phillip Andersen
- * @version 2021-10-10
+ * @version 2021-10-13
  */
 public class TestServer {
     private TestServer() {}
@@ -394,6 +394,8 @@ public class TestServer {
             System.out.print("\nIndtast adgangskode: \n> ");
             code = s.nextLine();
 
+            s.close();
+
             // Save information for next time
             PrintWriter pw = new PrintWriter("upload-data.dat");
             pw.println(auID + " " + code);
@@ -401,21 +403,24 @@ public class TestServer {
         }
 
         // Set meta information
-        arguments.put("h",ex.replace("dc3-1","dc3a").replace("dc3-4","dc3b").replace("dc4-1","dc4a").replace("dc4-2","dc4b").replace("dc4-2","dc4c"));
+        arguments.put("h",ex.replace("dc3-1","dc3a").replace("dc3-4","dc3b").replace("dc4-1","dc4a").replace("dc4-2","dc4b").replace("dc4-3","dc4c"));
         arguments.put("auID",auID);
         arguments.put("code",code);
 
         // Check all files and accumulate contents
         for(String file : files) {
             Path p = Paths.get(file+".java");
+            //handling for IntelliJ setup (aka file is stored in "<user.dir>/src")
+            if (!Files.exists(p)) p = Paths.get("src", file + ".java");
+
             // Check if file exists
             if(Files.exists(p)) {
                 String str = new String(Files.readAllBytes(p), Charset.defaultCharset());
                 arguments.put(file.toLowerCase(), str);
-            }
-            else {
-                System.err.println("No file with this name '" + file + ".java' in folder " + System.getProperty("user.dir")  +".");
-                return "No file with this name '" + file + ".java' in folder " + System.getProperty("user.dir")  +".";
+            } else {
+                String errMsg = "No file with this name '" + p.toRealPath().toString() + "'.";
+                System.err.println(errMsg);
+                return errMsg;
             }
         }
 
@@ -463,6 +468,7 @@ public class TestServer {
         ReadableByteChannel rbc = Channels.newChannel(website.openStream());
         FileOutputStream fos = new FileOutputStream(dest);
         fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        fos.close();
     }
 
     /**
