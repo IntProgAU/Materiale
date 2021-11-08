@@ -734,7 +734,7 @@ class WorldPanel extends JPanel {
 
         // Get the Graphics2D object and enable anti-aliasing
         Graphics2D g2d = (Graphics2D) g;
-        //g2d.scale(getWidth() / 500.0, getHeight() / 635.0);
+        g2d.scale(getWidth() / 520.0, getHeight() / 635.0);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setStroke(STROKE_DEFAULT);
 
