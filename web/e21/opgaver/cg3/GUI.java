@@ -106,7 +106,7 @@ public class GUI {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //Click on cities
-                System.out.println("Clicked at: " + e.getX() + ", " + e.getY());
+                //System.out.println("Clicked at: " + e.getX() + ", " + e.getY());
                 for(Country country : game.getCountries()){
                     for(City c : country.getCities()){
                         Point p = game.getPosition(c);
@@ -134,7 +134,7 @@ public class GUI {
 
             @Override
             public void mouseMoved(MouseEvent e){
-                System.out.println("Mouse: " + e.getX() + ", " + e.getY());
+                //System.out.println("Mouse: " + e.getX() + ", " + e.getY());
                 //Assume not hovering 
                 int i=0;
                 panel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -148,7 +148,7 @@ public class GUI {
                             panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
                             i++;
                             hover = c;
-                            System.out.println(p);
+                            //System.out.println(p);
                             break;
                         }
                     }
@@ -715,7 +715,7 @@ class WorldPanel extends JPanel {
         for(Player p : game.getPlayers()){
             String name = p.getClass().getName();
             try{
-            	playerIcons.put("LogPlayer", ImageIO.read(new File("guiplayer.png")));
+                playerIcons.put("LogPlayer", ImageIO.read(new File("guiplayer.png")));
                 playerIcons.put(name, ImageIO.read(new File(name.toLowerCase()+".png")));
             } catch (IOException e) {
                 e.printStackTrace();
