@@ -112,7 +112,7 @@ public class GUI {
                         Point p = game.getPosition(c);
                         double dist = Math.hypot(p.getX() - e.getX(), p.getY() - e.getY());
                         if(dist < WorldPanel.MIN_CIRCLE_RADIUS + 5){
-                            game.clickCity(c);
+                            clickCity(c);
                         }
                     }
                 }
@@ -214,6 +214,10 @@ public class GUI {
         //Apply existing settings to current game
         applyExistingSettings();
                 
+    }
+    
+    private void clickCity(City c) {
+        game.clickCity(c);
     }
     
     /**
@@ -338,7 +342,7 @@ public class GUI {
                     }
                 }
                 if(best != null && bestAngle < Math.PI/4){
-                    game.clickCity(best);
+                    clickCity(best);
                 }
                 
                 currentDirection = -1;
