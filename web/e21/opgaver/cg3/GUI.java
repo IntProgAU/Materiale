@@ -14,409 +14,489 @@ import javax.swing.border.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
- * GUI written in Java Swing. Used to get a graphical view of the data in a Game.
- * @author Nikolaj Ignatieff Schwartzbach. 
- * @version August 2019.
+ * A GUI written in Java Swing which wraps around a Game instance.
+ * Is used to get a graphical view of the data in a Game.
+ * 
+ * Keyboard controls and <space> to turnAround.
+ * 
+ * @author Nikolaj Ignatieff Schwartzbach
+ * @version 1.1.0
+ *
  */
 public class GUI {
 
-    private WorldPanel panel;                                 // Panel where the world is drawn.
-    private JPanel superpanel, buttons;                       // Panel containing all the other panels, and the panel for the buttons.               
-    private JFrame mainFrame, options;                        // Main frame for GUI.
-    private JFileChooser fileChooser;                         // Used for letting the user specify files to save/load (I/O).
-    private JRadioButton slowButton, medButton,
-    fastButton, sonicButton;                                  // Radio buttons for speed.
-    private JCheckBox random, greedy, smart;                  // Check boxes for active players.
-    private JTextField tollSizeTextField, robberyTextField;   // Textfields in Settings dialog box.
-    private JButton optionsButton, newGameButton,
-    pauseResumeButton, abortButton;                             		// Buttons for control of game
-    private Game game;                                        		// Reference to the Game object.
-    private int stepDelay = 500;                              		// Delay in ms between subsequent frames.
-    public final int WIDTH = 520, HEIGHT = 635;               		// Width and height of the inner window, in pixels.
-    private Timer timer;                                      		// Timer used to coordinate the next step with the OS.
-    private boolean paused = false;                           		// Tells whether this game is paused.
-    public static City hover;                                 		// Reference to the City which is currently under the mouse.
-    public static int speed = 2;                              		// Speed of game (0: Stop, 1: Slow, 2: Medium, 3: Fast, 4: Sonic). 
-    private Map<Integer, Boolean> press = new HashMap<>();    		// The keys which are held down (pressed) at this step.
-    private double currentDirection = 0;                      		// The current direction of the player (as dictated by the arrow keys).
-    private boolean usedKeyboard = false;                     		// Whether the player used the keyboard in the preceeding step.
-    private boolean optionsShowing = false;                   		// Whether the options menu is current showing.
-    private int CTRL = Event.CTRL_MASK,								// CTRL
-    		    CTRL_SHIFT = Event.CTRL_MASK | Event.SHIFT_MASK;	// CTRL+SHIFT
+    /** The JPanel where the world are drawn. */
+    private WorldPanel panel;
+    private JPanel superpanel, buttons;
+    
+    /** The JFrame, the main GUI. */
+    private JFrame mainFrame, options;
+    
+    /** The JFileChooser object used for I/O (logs) */
+    private JFileChooser fileChooser;
 
+    /** More graphical components */
+    private JRadioButton slowButton, medButton, fastButton, sonicButton;
+    
+    /** Check-boxes */
+    private JCheckBox random, greedy, smart;
+    
+    /** Textfields */
+    private JTextField tollSizeTextField, robberyTextField;
+    
+    /** Buttons */
+    private JButton optionsButton, newGameButton, pauseResumeButton, abortButton;
+    
+    /** Reference to the Game instance */
+    private Game game;
+    
+    /** Delay in ms between subsequent frames */
+    private int frameDelay = 500;
+    
+    /** Width and height of the inner window, in pixels */
+    public int WIDTH = 520,
+               HEIGHT = 635;
+    
+    /** Main game Timer */
+    private Timer timer;
+    
+    /** Whether or not this game is currently paused */
+    private boolean paused = false;
+    
+    /** Reference to the City which is currently under the mouse */
+    public static City hover;
+    
+    /** The current game speed (0 = stop, 1 = slow, .. ) */
+    public static int speed = 2;
+    
+    /** Maps which keys are being held down at this step */
+    private Map<Integer, Boolean> press = new HashMap<>();
+    
+    private boolean hasGameStarted = false;
+    
+    private double currentDirection = 0;
+    
+    private boolean usedKeyboard = false;
+    
+    private boolean optionsShowing = false;
+
+    private int CTRL = Event.CTRL_MASK,                                // CTRL
+                CTRL_SHIFT = Event.CTRL_MASK | Event.SHIFT_MASK;    // CTRL+SHIFT
+    
     /**
-     * Constructor for the GUI class (also creates a Game object).
+     * Constructor for the GUI class.
+     * Creates a Game instance autonomously.
      */
-    private GUI() {
-        // Initialize Game object
+    private GUI(){
+        
+        //Initialize Game
         game = Game.fromFile("network.dat");
-        game.getRandom().setSeed((int)(Math.random() * Integer.MAX_VALUE));
-
-        // Initialize buttons
-        buttons = createButtonPanel();
+        
+        //Initialize buttons
+        buttons = createButtonPanel();      
         options = createOptionsDialogBox();
-
-        // Initialize world panel
+        
+        //Initialize ActorPanel
         panel = new WorldPanel(game);
         panel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-
-        // Handle mouse click events in the inner window
+        
+        
+        //Handle mouse click events in the inner window
         panel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    // Handle click on cities
-                    for(Country country : game.getCountries()) {
-                        for(City c : country.getCities()) {
-                            Point p = game.getPosition(c);
-                            double dist = Math.hypot(p.getX() - e.getX(), p.getY() - e.getY());
-                            if(dist < WorldPanel.MIN_CIRCLE_RADIUS + 5) {
-                                game.clickCity(c);
-                            }
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //Click on cities
+                //System.out.println("Clicked at: " + e.getX() + ", " + e.getY());
+                for(Country country : game.getCountries()){
+                    for(City c : country.getCities()){
+                        Point p = game.getPosition(c);
+                        double dist = Math.hypot(p.getX() - e.getX(), p.getY() - e.getY());
+                        if(dist < WorldPanel.MIN_CIRCLE_RADIUS + 5){
+                            clickCity(c);
                         }
                     }
-
-                    // Handle click to change game speed
-                    if(e.getX() > 280 && e.getX() < 280+39*4+6 && e.getY() > 590 && e.getY() < 610) {
-                        speed = 1 + Math.min((e.getX() - 280) / 39, 4);
-                        mainFrame.repaint();
-                        setSpeed(speed);
-                    }
                 }
-            });
-
-        // Hovering over cities
+                
+                //Click to change game speed
+                if(e.getX()>280 && e.getX()<280+39*4+6 && e.getY()>590 && e.getY()<610){
+                    speed = 1+Math.min((e.getX()-280) / 39, 4);
+                    mainFrame.repaint();
+                    setSpeed(speed);
+                }
+            }
+        });
+        
+        //Hovering over cities
         panel.addMouseMotionListener(new MouseMotionListener() {
 
-                @Override
-                public void mouseDragged(MouseEvent arg0) { }
+            @Override
+            public void mouseDragged(MouseEvent arg0) { }
 
-                @Override
-                public void mouseMoved(MouseEvent e) {
-
-                    // Assume not hovering 
-                    int i=0;
-                    panel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-
-                    // Hover over cities
-                    for(Country country : game.getCountries()) {
-                        for(City c : country.getCities()) {
-                            Point p = game.getPosition(c);
-                            if(p == null) {
-                                throw new RuntimeException("No position for '"+c+"'.");
-                            }
-                            double dist = Math.hypot(p.getX() - e.getX(), p.getY() - e.getY());
-                            if(dist < WorldPanel.MIN_CIRCLE_RADIUS + 5) {
-                                panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-                                i++;
-                                hover = c;
-                                break;
-                            }
+            @Override
+            public void mouseMoved(MouseEvent e){
+                //System.out.println("Mouse: " + e.getX() + ", " + e.getY());
+                //Assume not hovering 
+                int i=0;
+                panel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                
+                //Hover over cities
+                for(Country country : game.getCountries()){
+                    for(City c : country.getCities()){
+                        Point p = game.getPosition(c);
+                        double dist = Math.hypot(p.getX() - e.getX(), p.getY() - e.getY());
+                        if(dist < WorldPanel.MIN_CIRCLE_RADIUS + 5){
+                            panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                            i++;
+                            hover = c;
+                            //System.out.println(p);
+                            break;
                         }
                     }
-                    if(i == 0) {
-                        hover = null;
-                    }
-
-                    // Hovering over game speed
-                    if(e.getX() > 280 && e.getX() < 280 + 39 * 4 + 6 && e.getY() > 590 && e.getY() < 610) {
-                        panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-                    }
-                    mainFrame.repaint();
                 }
-
-            });
-
-        // Initialize file chooser
+                if(i==0)
+                    hover = null;
+                
+                //Hovering over game speed
+                if(e.getX()>280 && e.getX()<280+39*4+6 && e.getY()>590 && e.getY()<610){
+                    panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                }
+                mainFrame.repaint();
+            }
+            
+        });
+        
+        //Initialize file chooser
         fileChooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Log files", "log");
         fileChooser.setFileFilter(filter);
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
-
-        // Initialize the super JPanel (which contains the other JPanels)
+        
+        //Initialize the super JPanel (which contains the other JPanels)
         superpanel = new JPanel();
         superpanel.setLayout(new BoxLayout(superpanel, BoxLayout.Y_AXIS));
         superpanel.add(panel);
         superpanel.add(buttons);
-
-        // Initialize and setup the main frame
+        
+        //Initialize and setup the the JFrame
         mainFrame = new JFrame("Nordic Traveller - Introduktion til Programmering");
         mainFrame.add(superpanel);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setResizable(true);
+        mainFrame.setResizable(false);
         mainFrame.setContentPane(superpanel);
         mainFrame.setVisible(true);
-
-        // Handling key strokes
+        
         panel.requestFocusInWindow();
-        KeyListener kl = new KeyListener() {
+        KeyListener kl = new KeyListener(){
+            
+            public void keyTyped(KeyEvent e) {}
 
-                public void keyTyped(KeyEvent e) {}
-
-                public void keyPressed(KeyEvent e) {
-                    press.put(e.getKeyCode(), true);
-                    updateDirection();
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_SPACE){
+                    game.getGUIPlayer().turnAround();
+                    return;
                 }
+                press.put(e.getKeyCode(), true);
+                updateDirection();
+            }
 
-                public void keyReleased(KeyEvent e) {
-                    press.put(e.getKeyCode(), false);
-                }
-            };
-        for(Component c : buttons.getComponents()) {
-            c.addKeyListener(kl);
+            public void keyReleased(KeyEvent e) {
+                press.put(e.getKeyCode(), false);
+            }
+        };
+        for(Component j : buttons.getComponents()){
+            j.addKeyListener(kl);
         }
         panel.addKeyListener(kl);
+        
+        //Initialize the game timer
+        timer = createDefaultTimer();
 
-        // Initialize the game timer
-        timer = new Timer(stepDelay, e->step());
-
-        // Apply existing settings to current game
+        //Apply existing settings to current game
         applyExistingSettings();
+                
     }
-
-    /**
-     * Advances the game one step.
-     */
-    private void step(){
-        Player p = game.getGUIPlayer();
-        if(usedKeyboard && p.getPosition().hasArrived()) {
-            City playerCity = p.getPosition().getTo();
-
-            City best = null;
-            double bestAngle = 2 * Math.PI;
-            Point posPlayer = game.getPosition(playerCity);
-            for(Road r : p.getCountry().getRoads(playerCity)) {
-                Point posCity = game.getPosition(r.getTo());
-                double cityAngle = Math.atan2(-posCity.y + posPlayer.y, posCity.x - posPlayer.x);
-                double newAngle = angleDiff(cityAngle, currentDirection);
-                if(newAngle < bestAngle) {
-                    best = r.getTo();
-                    bestAngle = newAngle;
-                }
-            }
-            if(best != null && bestAngle < Math.PI / 4) {
-                game.clickCity(best);
-            }
-
-            currentDirection = -1;
-            usedKeyboard = false;
-        }
-
-        game.step();
-        optionsButton.setEnabled(!game.ongoing());
-        pauseResumeButton.setEnabled(game.ongoing());
-        abortButton.setEnabled(game.ongoing());
-        mainFrame.repaint();
+    
+    private void clickCity(City c) {
+        game.clickCity(c);
     }
-
+    
     /**
      * Returns the unsigned difference between two angles in the interval [-pi, pi].
-     * @param a   First angle
-     * @param b   Second angle
-     * @return    Unsigned difference in radians between a and b.
+     * @param a First angle
+     * @param b Second angle
+     * @return The unsigned difference in radians between a and b.
      */
-    private double angleDiff(double a, double b) {
-        double d = Math.atan2(Math.sin(a  -b), Math.cos(a - b));
-        double d2 = (d < 0 ? d + 2 * Math.PI : d);
-        return (d2 > Math.PI ? 2 * Math.PI - d2 : d2);
+    private double angleDiff(double a, double b){
+       double d = Math.atan2(Math.sin(a-b), Math.cos(a-b));
+       double d2 = d < 0 ? d + 2*Math.PI : d;
+       return d2 > Math.PI ? 2*Math.PI - d2 : d2;
     }
-
+    
     /**
-     * Changes the state of the GUI elements.
+     * Changes the state of the GUI elements
      */
-    public void applyExistingSettings() {
+    public void applyExistingSettings(){
         SwingUtilities.invokeLater(() -> {
-                // Active players
-                random.setSelected(game.getSettings().isActive(0));
-                greedy.setSelected(game.getSettings().isActive(1));
-                smart.setSelected(game.getSettings().isActive(2));
-
-                // Text-fields
-                tollSizeTextField.setText("" + game.getSettings().getTollToBePaid());
-                robberyTextField.setText("" + game.getSettings().getRisk());
-
-                // Game speed
-                speed = game.getSettings().getGameSpeed();
-                setSpeed(speed);
-            });
-
+            //Active players
+            random.setSelected(game.getSettings().isActive(0));
+            greedy.setSelected(game.getSettings().isActive(1));
+            smart.setSelected(game.getSettings().isActive(2));
+        
+            //Text-fields
+            tollSizeTextField.setText(""+game.getSettings().getTollToBePaid());
+            robberyTextField.setText(""+game.getSettings().getRisk());    
+        
+            //Game speed
+            speed = game.getSettings().getGameSpeed();
+            setSpeed(speed);
+        });
+        
     }
-
+    
     /**
-     * Changes the game speed.
-     * @param speed   New speed of the game. 0 <= speed <= 4.
+     * Changes the game speed
+     * @param speed The new speed of the game. 0 <= speed <= 4
      */
-    public void setSpeed(int speed) {
+    public void setSpeed(int speed){
         SwingUtilities.invokeLater(() -> {
-                // Stop the game timer, and unselect all GUI buttons
-                timer.stop();
-                slowButton.setSelected(false);
-                medButton.setSelected(false);
-                fastButton.setSelected(false);
-                sonicButton.setSelected(false);
-
-                // Change the speed
-                switch(speed) {
-                    case 1: slowButton.setSelected(true); timer.setDelay(200); if(!paused) { timer.start(); } break;
-                    case 2: medButton.setSelected(true);  timer.setDelay(80); if(!paused) { timer.start(); } break;
-                    case 3: fastButton.setSelected(true); timer.setDelay(30);  if(!paused) { timer.start(); } break;
-                    case 4: sonicButton.setSelected(true); timer.setDelay(10); if(!paused) { timer.start(); } break;
-                }
-                game.getSettings().setGameSpeed(speed);
-            });
+            //Stop the game timer, and unselect all GUI buttons
+            timer.stop();
+            slowButton.setSelected(false);
+            medButton.setSelected(false);
+            fastButton.setSelected(false);
+            sonicButton.setSelected(false);
+        
+            //Change the speed
+            switch(speed){
+                case 1:
+                    slowButton.setSelected(true);
+                    timer.setDelay(200);
+                    if(!paused)
+                        timer.start();
+                    break;
+                case 2:
+                    medButton.setSelected(true);
+                    timer.setDelay(80);
+                    if(!paused)
+                        timer.start();
+                    break;
+                case 3:
+                    fastButton.setSelected(true);
+                    timer.setDelay(30);
+                    if(!paused)
+                        timer.start();
+                    break;
+                case 4:
+                    sonicButton.setSelected(true);
+                    timer.setDelay(10);
+                    if(!paused)
+                        timer.start();
+                    break;
+            }
+            game.getSettings().setGameSpeed(speed);
+        });
     }
-
-    /**
-     * Invokes the Pause/Resume button.
-     * If the game is currently running, pauses the game.
-     * Otherwise, starts the game.
-     */
+    
     public void pauseResume() {
         SwingUtilities.invokeLater(() -> {
                 paused = !paused;
-                if(paused) {
+                if(paused){
                     timer.stop();
                     pauseResumeButton.setText("Resume game");
-                }
-                else {
+                } else {
                     timer.start();
                     pauseResumeButton.setText("Pause game");
                 }
-            });
+        });
     }
-
-    /**
-     * Shows the option menu and stop the game timer.
-     */
+    
     public void showOptions() {
         optionsShowing = true;
-        timer.stop();                    // Stop the game timer
-        mainFrame.setVisible(false);     // Hide the main window
-        options.setVisible(true);        // Show the options window
+        
+        //Stop the game timer
+        timer.stop(); 
+        
+        //Hide the main window
+        //mainFrame.setVisible(false); 
+        
+        //Show the options window
+        options.setVisible(true);
     }
-
-    /**
-     * Starts a new game with a fresh seed.
-     */
+    
+    private Timer createDefaultTimer() {
+        Timer t = new Timer(frameDelay, e->{
+            Player p = game.getGUIPlayer();
+            if(usedKeyboard && p.getPosition().hasArrived()){
+                City playerCity = p.getPosition().getTo();
+                
+                City best = null;
+                double bestAngle = 2*Math.PI;
+                Point posPlayer = game.getPosition(playerCity);
+                for(Road r : p.getCountry().getRoads(playerCity)){
+                    Point posCity = game.getPosition(r.getTo());
+                    double cityAngle = Math.atan2(-posCity.y + posPlayer.y, posCity.x - posPlayer.x);
+                    double newAngle = angleDiff(cityAngle, currentDirection);
+                    if(newAngle < bestAngle){
+                        best = r.getTo();
+                        bestAngle = newAngle;
+                    }
+                }
+                if(best != null && bestAngle < Math.PI/4){
+                    clickCity(best);
+                }
+                
+                currentDirection = -1;
+                usedKeyboard = false;
+            }
+            game.step();
+            updateButtonsAvailabillity();
+            mainFrame.repaint();
+        });
+        
+        return t;
+    }
+    
+    private void updateButtonsAvailabillity() {
+            optionsButton.setEnabled(!game.ongoing());
+            pauseResumeButton.setEnabled(game.ongoing());
+            abortButton.setEnabled(game.ongoing());
+    }
+    
     public void newGame() {
         game.reset(); 
         mainFrame.repaint();
     }
-
+    
     /**
-     * Creates the JPanel which contains the buttons in the bottom of the GUI.
-     * @return   JPanel containing buttons to control the game.
+     * Creates the JPanel which contains the buttons in the bottom of the GUI
+     * @return A JPanel containing some buttons to control the game
      */
-    public JPanel createButtonPanel() {
-        // Initialize the JPanel using a GridLayout
+    public JPanel createButtonPanel(){
+        //Initialize the JPanel, using a GridLayout
         JPanel buttons = new JPanel();
-        buttons.setLayout(new GridLayout(1,4)); 
-
-        // Create the 'New'-button
+        buttons.setLayout(new GridLayout(1,4));                                  
+        
+        //Instantiate the 'New'-button
         newGameButton = new JButton("New game");
+        //Connect an ActionListener
         newGameButton.addActionListener(e -> newGame());
+        //Add it to the button panel
         buttons.add(newGameButton);
 
-        // Create the 'Pause game'-button
+        //Add the 'Pause game'-button
         pauseResumeButton = new JButton("Pause game");
+        //Connect an ActionListener
         pauseResumeButton.addActionListener(e -> pauseResume());
+        //Add it to the button panel
         buttons.add(pauseResumeButton);
-
-        // Create the 'Abort game'-button
+        
+        //Add the 'Abort game'-button
         abortButton = new JButton("Abort game");
-        abortButton.addActionListener(e -> game.abort());
+        abortButton.addActionListener(e -> {
+            game.abort();
+            updateButtonsAvailabillity();
+        });
         buttons.add(abortButton);
 
-        // Create the 'Options...'-button
+        //Add the 'Options...'-button
         optionsButton = new JButton("Options...");
         optionsButton.setEnabled(false);
         optionsButton.addActionListener(e -> showOptions());
-        buttons.add(optionsButton);
-
+        buttons.add(optionsButton); 
+        
+        //Return the JPanel
         return buttons;
     }
-
+    
     private void applyOptions() {
-        optionsShowing = false;
+        //optionsShowing = false;
+        options.dispatchEvent(new WindowEvent(options, WindowEvent.WINDOW_CLOSING));
         game.reset();
-
-        // Enabled players
+        
+        //Enabled players
         game.getSettings().setActive(0, random.isSelected());
         game.getSettings().setActive(1, greedy.isSelected());
         game.getSettings().setActive(2, smart.isSelected());
-
-        // Toll size & robbery
+        
+        //Toll size & robbery
         int tollSize, riskRob = 0;
         try{
             tollSize = Integer.parseInt(tollSizeTextField.getText());
             riskRob  = Integer.parseInt(robberyTextField.getText());
-            if(tollSize < 0 || riskRob < 0 || tollSize > 50 || riskRob > 50) {
-                JOptionPane.showMessageDialog(mainFrame, "'Toll size' and 'Risk rob' must be between 0 and 50.",
-                    "Malformed input", JOptionPane.ERROR_MESSAGE);
+            if(tollSize < 0 || riskRob < 0 || tollSize > 50 || riskRob > 50){
+                JOptionPane.showMessageDialog(mainFrame, "'Toll size' and 'Risk rob' must be between 0 and 50.", "Malformed input", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(mainFrame, "'Toll size' and 'Risk rob' must be integers.",
-                "Malformed input", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(mainFrame, "'Toll size' and 'Risk rob' must be integers.", "Malformed input", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+        
         game.getSettings().setRisk(riskRob);
         game.getSettings().setTollToBePaid(tollSize);
-
+       
+        
+        mainFrame.setVisible(false);
         mainFrame.setVisible(true);
         mainFrame.repaint();
+        
+        if(slowButton.isSelected())
+            speed = 1;
 
-        // Set speed
-        if(slowButton.isSelected()) { speed = 1; }
-        if(medButton.isSelected()) { speed = 2; }
-        if(fastButton.isSelected()) { speed = 3; }
-        if(sonicButton.isSelected()) { speed = 4; }
+        if(medButton.isSelected())
+            speed = 2;
+
+        if(fastButton.isSelected())
+            speed = 3;
+
+        if(sonicButton.isSelected())
+            speed = 4;
+        
         setSpeed(speed);
     }
-
+        
     /**
-     * Updates the next direction based on the action of the keyboard.
-     * Computes the projected distance resulting from travelling in the direction indicated by the arrow keys.
-     * Only updates the direction if the map 'press' indicates that that the keyboard was used.
+     * Updates the next direction based on the 'press' map.
      */
-    private void updateDirection() {
+    private void updateDirection(){
         boolean l = press.getOrDefault(KeyEvent.VK_LEFT, false),
-        r = press.getOrDefault(KeyEvent.VK_RIGHT, false),
-        u = press.getOrDefault(KeyEvent.VK_UP, false),
-        d = press.getOrDefault(KeyEvent.VK_DOWN, false);
-
+                r = press.getOrDefault(KeyEvent.VK_RIGHT, false),
+                u = press.getOrDefault(KeyEvent.VK_UP, false),
+                d = press.getOrDefault(KeyEvent.VK_DOWN, false);
+                
         usedKeyboard = l || r || u || d && !(l && r && u && d);
-
-        if(!usedKeyboard) { return; }
-
+        
+        if(!usedKeyboard)
+            return;
+            
         int h = 0, v = 0;
-
-        // Horizontal
+        
+        //Horizontal
         if(l && !r) h = -1;
         if(r && !l) h = 1;
-
-        // Vertical
+        
+        //Vertical
         if(u && !d) v = -1;
         if(d && !u) v = 1;
-
-        currentDirection = Math.atan2(-v, h);
+        
+        currentDirection = Math.atan2(-v,h);
     }
-
+    
     /**
      * Creates the JFrame which represents the Options...-menu.
-     * @return   JFrame representing the Options...-menu.
+     * @return  A JFrame representing the Options...-menu.
      */
-    public JFrame createOptionsDialogBox() {
+    public JFrame createOptionsDialogBox(){
         JPanel superpanel = new JPanel();
         superpanel.setLayout(new BorderLayout());
-
+        
         JPanel options = new JPanel();
         options.setLayout(new BorderLayout());
-
-        // Active players
+        
+        //Active players
         JPanel playerPanel = new JPanel();
         playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.Y_AXIS));
-
+        
         random = new JCheckBox("Random Player");
         random.setSelected(true);
         playerPanel.add(random);
@@ -428,23 +508,23 @@ public class GUI {
         smart = new JCheckBox("Smart Player");
         smart.setSelected(true);
         playerPanel.add(smart);
-
-        // Text input
+        
+        //Text input
         JPanel tollAndRobberyPanel = new JPanel();
-        tollAndRobberyPanel.setLayout(new GridLayout(2,3,5,5));
-
-        // Toll size
+        tollAndRobberyPanel.setLayout(new GridLayout(2,3,5,5));                     
+        
+        //Toll size
         JLabel tollSizeLabel = new JLabel("Toll to be paid:");
         tollAndRobberyPanel.add(tollSizeLabel);
-
+        
         tollSizeTextField = new JTextField("20", 10);
         tollAndRobberyPanel.add(tollSizeTextField);
 
         JLabel percTollSize = new JLabel("% in [0,50]");
         tollAndRobberyPanel.add(percTollSize);
-
-        // Rob risk
-        JLabel robberyLabel = new JLabel("Risk of robbery:");  
+                
+        //Rob risk
+        JLabel robberyLabel = new JLabel("Risk of robbery:");                       
         tollAndRobberyPanel.add(robberyLabel);
 
         robberyTextField = new JTextField("20", 10);
@@ -452,8 +532,9 @@ public class GUI {
 
         JLabel percrobbery = new JLabel("% in [0,50]");
         tollAndRobberyPanel.add(percrobbery);
-
-        // Speed options
+        
+        
+        //Speed options
         JPanel speedPanel = new JPanel();
         speedPanel.setLayout(new FlowLayout());
 
@@ -466,114 +547,120 @@ public class GUI {
 
         fastButton = new JRadioButton("FAST");
         speedPanel.add(fastButton);
-
+        
         sonicButton = new JRadioButton("SONIC");
         speedPanel.add(sonicButton);
-
+        
         ButtonGroup group = new ButtonGroup();
         group.add(slowButton);
         group.add(medButton);
         group.add(fastButton);
         group.add(sonicButton);
-
-        // Add panels to superpanel
+        
+        //Add panels to superpanel
         JPanel superPlayerPanel = new JPanel();
         superPlayerPanel.setLayout(new BorderLayout());
-        playerPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        playerPanel.setBorder(new EmptyBorder(5,5,5,5));
         superPlayerPanel.setBorder(new TitledBorder("Active automatic players"));
         superPlayerPanel.add(playerPanel, BorderLayout.WEST);
         options.add(superPlayerPanel, BorderLayout.NORTH);
 
         JPanel superTextPanel = new JPanel();
         superTextPanel.add(tollAndRobberyPanel);
-        tollAndRobberyPanel.setBorder(new EmptyBorder(0, 5, 0, 5));
+        tollAndRobberyPanel.setBorder(new EmptyBorder(0,5,0,5));
         superTextPanel.setBorder(new TitledBorder("Toll and robbery"));
         options.add(superTextPanel, BorderLayout.CENTER);
 
         options.add(speedPanel, BorderLayout.SOUTH);
         TitledBorder bSpeed = new TitledBorder("Game speed");
         speedPanel.setBorder(bSpeed);
-
+        
         JButton applyButton = new JButton("Apply changes");
-
+        
         superpanel.add(options, BorderLayout.NORTH);
         superpanel.add(applyButton, BorderLayout.SOUTH);
-
+        
         JFrame frame = new JFrame("(options) Nordic Traveller - Introduktion til Programmering");
         frame.add(superpanel);
         frame.setLocationRelativeTo(null);
         frame.addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {
-                    optionsShowing = false;
-                    game.reset();
-                    mainFrame.setVisible(false);
-                    mainFrame.setVisible(true);
-                    mainFrame.repaint();
-                    if(slowButton.isSelected()) { speed = 1; }
-                    if(medButton.isSelected()) { speed = 2; }
-                    if(fastButton.isSelected()) { speed = 3; }
-                    if(sonicButton.isSelected()) { speed = 4; }
-                    setSpeed(speed);
-                }
-            });
+           public void windowClosing(WindowEvent e){
+               optionsShowing = false;
+               //Why is this code here? Shouldn't the options do nothing, if closed on the 'x' button??
+               // - Asger
+               /*game.reset();
+               mainFrame.setVisible(false);
+               mainFrame.setVisible(true);
+               mainFrame.repaint();
+               if(slowButton.isSelected())
+                   speed = 1;
+
+               if(medButton.isSelected())
+                   speed = 2;
+
+               if(fastButton.isSelected())
+                   speed = 3;
+
+               if(sonicButton.isSelected())
+                   speed = 4;
+                
+               setSpeed(speed);*/
+           }
+        });
         frame.setResizable(false);
         frame.setContentPane(superpanel);
         frame.pack();
 
         applyButton.addActionListener(e -> applyOptions());
-
+        
         return frame;
     }
-
+    
     /**
      * Tests the Save button.
      * This method is invoked when testing the functionality of the Save button.
      */
-    private void testSaveButton() {
-        JOptionPane.showMessageDialog(mainFrame, "You have clicked the 'Save' button.",
-            "Information", JOptionPane.INFORMATION_MESSAGE);
+    private void testSaveButton(){
+        JOptionPane.showMessageDialog(mainFrame, "You have clicked the 'Save' button.", "Information", JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
      * Tests the Play button.
      * This method is invoked when testing the functionality of the Play button.
      */
-    private void testPlayButton() {
-        JOptionPane.showMessageDialog(mainFrame, "You have clicked the 'Play' button.",
-            "Information", JOptionPane.INFORMATION_MESSAGE);
+    private void testPlayButton(){
+        JOptionPane.showMessageDialog(mainFrame, "You have clicked the 'Play' button.", "Information", JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
      * Tests the Repeat button.
      * This method is invoked when testing the functionality of the Repeat button.
      */
-    private void testRepeatButton() {
-        JOptionPane.showMessageDialog(mainFrame, "You have clicked the 'Repeat' button.",
-            "Information", JOptionPane.INFORMATION_MESSAGE);
+    private void testRepeatButton(){
+        JOptionPane.showMessageDialog(mainFrame, "You have clicked the 'Repeat' button.", "Information", JOptionPane.INFORMATION_MESSAGE);
     }
-
-    private void startGUI() {
+    
+    private void startGUI(){
         mainFrame.pack();
         mainFrame.repaint();
     }
-
+    
     /**
      * Starts the game.
      */
     public static void createGameBoard() {
-        if(!Files.exists(Paths.get("network.dat"))) {
-            JOptionPane.showMessageDialog(null, "'network.dat' does not exist in the current project. Game closing.",
-                "Unable to start NordicTraveller", JOptionPane.ERROR_MESSAGE);
+        if(!Files.exists(Paths.get("network.dat"))){
+            JOptionPane.showMessageDialog(null, "'network.dat' does not exist in the current project. Game closing.", "Unable to start NordicTraveller", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if(!Files.exists(Paths.get("map.png"))) {
-            JOptionPane.showMessageDialog(null, "'map.png' does not exist in the current project. Game closing.",
-                "Unable to start NordicTraveller", JOptionPane.ERROR_MESSAGE);
+        if(!Files.exists(Paths.get("map.png"))){
+            JOptionPane.showMessageDialog(null, "'map.png' does not exist in the current project. Game closing.", "Unable to start NordicTraveller", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        new GUI().startGUI();
+        GUI g = new GUI();
+        g.game.abort();
+        g.startGUI();
     }
-
 }
 
 /**
@@ -632,7 +719,7 @@ class WorldPanel extends JPanel {
         for(Player p : game.getPlayers()){
             String name = p.getClass().getName();
             try{
-            	playerIcons.put("LogPlayer", ImageIO.read(new File("guiplayer.png")));
+                playerIcons.put("LogPlayer", ImageIO.read(new File("guiplayer.png")));
                 playerIcons.put(name, ImageIO.read(new File(name.toLowerCase()+".png")));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -674,7 +761,7 @@ class WorldPanel extends JPanel {
 
         // Get the Graphics2D object and enable anti-aliasing
         Graphics2D g2d = (Graphics2D) g;
-        g2d.scale(getWidth() / 500.0, getHeight() / 635.0);
+        g2d.scale(getWidth() / 520.0, getHeight() / 635.0);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setStroke(STROKE_DEFAULT);
 
