@@ -18,9 +18,11 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author  Nikolaj I. Schwartzbach & Asger Phillip Andersen
- * @version 2021-10-13
+ * @version 2021-11-27
  */
 public class TestServer {
+    private static String srcDir = "";
+
     private TestServer() {}
 
     /**
@@ -30,7 +32,7 @@ public class TestServer {
     public static void updateTestServer() {
         if(updateAvailable()) {
             try (ReadableByteChannel rbc = Channels.newChannel(new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e21/opgaver/TestServer.java").openStream());
-                 FileOutputStream fos = new FileOutputStream("TestServer.java")) {
+                 FileOutputStream fos = new FileOutputStream(srcDir + "TestServer.java")) {
                 fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
                 System.out.println("TestServeren er blevet opdateret :)");
             } catch (FileNotFoundException e) {
@@ -63,9 +65,10 @@ public class TestServer {
      * @return true when there is an update available, otherwise false.
      */
     private static boolean updateAvailable() {
+        setSrcDir();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu-MM-dd");
 
-        try(InputStream local = new FileInputStream(new File("TestServer.java"));
+        try(InputStream local = new FileInputStream(new File(srcDir + "TestServer.java"));
             InputStream online = (new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e21/opgaver/TestServer.java")).openStream()) {
             LocalDate localDate = LocalDate.parse(parseVersionDate(local), dtf);
             LocalDate onlineDate = LocalDate.parse(parseVersionDate(online), dtf);
@@ -409,7 +412,7 @@ public class TestServer {
 
         // Check all files and accumulate contents
         for(String file : files) {
-            Path p = Paths.get(file+".java");
+            Path p = Paths.get(srcDir + file+".java");
             //handling for IntelliJ setup (aka file is stored in "<user.dir>/src")
             if (!Files.exists(p)) p = Paths.get("src", file + ".java");
 
@@ -462,6 +465,7 @@ public class TestServer {
      * @param dest The destination of the downloaded file.
      */
     private static void downloadFile(String url, String dest) throws IOException {
+        dest = dest.endsWith(".java") ? srcDir + dest : dest;
         if(Files.exists(Paths.get(dest)))
             Files.delete(Paths.get(dest));
         URL website = new URL(url);
@@ -512,5 +516,9 @@ public class TestServer {
         }
         http.disconnect();
         return sb.toString();
+    }
+
+    private static void setSrcDir() {
+        srcDir = Files.isDirectory(Paths.get("src")) ? "src/" : "";
     }
 }
