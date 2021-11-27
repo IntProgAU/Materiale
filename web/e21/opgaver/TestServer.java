@@ -13,7 +13,6 @@ import java.time.format.DateTimeFormatter;
  * This class is used to communicate with the test server.
  *
  * Errors should be reported via the webboard.
- * Critical errors may also be reported by mail to nis@cs.au.dk
  * Describe the problem as detailed and precise as possible.
  * If we cannot reproduce it, we cannot fix it.
  *
