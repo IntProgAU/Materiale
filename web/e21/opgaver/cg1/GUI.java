@@ -134,7 +134,7 @@ public class GUI {
 
             @Override
             public void mouseMoved(MouseEvent e){
-                System.out.println("Mouse: " + e.getX() + ", " + e.getY());
+                //System.out.println("Mouse: " + e.getX() + ", " + e.getY());
                 //Assume not hovering 
                 int i=0;
                 panel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -148,7 +148,7 @@ public class GUI {
                             panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
                             i++;
                             hover = c;
-                            System.out.println(p);
+                            //System.out.println(p);
                             break;
                         }
                     }
