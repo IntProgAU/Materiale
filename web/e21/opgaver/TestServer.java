@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author  Nikolaj I. Schwartzbach & Asger Phillip Andersen
- * @version 2021-11-27
+ * @version 2022-02-11
  */
 public class TestServer {
     private static String srcDir = "";
@@ -190,132 +190,132 @@ public class TestServer {
 
             // 2016
             case "basketplayer":
-                files = new String[] {"BasketPlayer","BasketTeam"}; break;
+                files = new String[] {"BasketPlayer","BasketTeam", "TestDriver"}; break;
             case "cow":
-                files = new String[] {"Cow","DiaryFarm"}; break;
+                files = new String[] {"Cow","DiaryFarm", "TestDriver"}; break;
             case "field-1":
             case "field-2":
-                files = new String[] {"Field","Farm"}; break;
+                files = new String[] {"Field","Farm", "TestDriver"}; break;
             case "goat":
-                files = new String[] {"Goat","GoatFarm"}; break;
+                files = new String[] {"Goat","GoatFarm", "TestDriver"}; break;
             case "handballplayer":
-                files = new String[] {"HandballPlayer","HandballTeam"}; break;
+                files = new String[] {"HandballPlayer","HandballTeam", "TestDriver"}; break;
             case "image":
-                files = new String[] {"Image","UsbStick"}; break;
+                files = new String[] {"Image","UsbStick", "TestDriver"}; break;
             case "soccerplayer":
-                files = new String[] {"SoccerPlayer","SoccerTeam"}; break;
+                files = new String[] {"SoccerPlayer","SoccerTeam", "TestDriver"}; break;
             case "volleyplayer":
-                files = new String[] {"VolleyPlayer","VolleyTeam"}; break;
+                files = new String[] {"VolleyPlayer","VolleyTeam", "TestDriver"}; break;
             case "passenger":
-                files = new String[] {"Passenger","Ferry"}; break;
+                files = new String[] {"Passenger","Ferry", "TestDriver"}; break;
             case "picture":
-                files = new String[] {"Picture","UsbStick"}; break;
+                files = new String[] {"Picture","UsbStick", "TestDriver"}; break;
             case "song":
-                files = new String[] {"Song","DVD"}; break;
+                files = new String[] {"Song","DVD", "TestDriver"}; break;
 
             // 2017
             case "animal":
-                files = new String[] {"Animal","Zoo"}; break;
+                files = new String[] {"Animal","Zoo", "TestDriver"}; break;
             case "brick-1":
             case "brick-2":
-                files = new String[] {"Brick","LegoBox"}; break;
+                files = new String[] {"Brick","LegoBox", "TestDriver"}; break;
             case "carpet-1":
             case "carpet-2":
-                files = new String[] {"Carpet","Shop"}; break;
+                files = new String[] {"Carpet","Shop", "TestDriver"}; break;
             case "tool-1":
             case "tool-2":
-                files = new String[] {"Tool","ToolBox"}; break;
+                files = new String[] {"Tool","ToolBox", "TestDriver"}; break;
             case "vegetable-1":
             case "vegetable-2":
-                files = new String[] {"Vegetable","Shop"}; break;
+                files = new String[] {"Vegetable","Shop", "TestDriver"}; break;
             case "nail":
-                files = new String[] {"Nail","Box"}; break;
+                files = new String[] {"Nail","Box", "TestDriver"}; break;
             case "screw":
-                files = new String[] {"Screw","Box"}; break;
+                files = new String[] {"Screw","Box", "TestDriver"}; break;
             case "chicken":
-                files = new String[] {"Chicken","ChickenYard"}; break;
+                files = new String[] {"Chicken","ChickenYard", "TestDriver"}; break;
             case "pigeon":
-                files = new String[] {"Pigeon","PigeonLoft"}; break;
+                files = new String[] {"Pigeon","PigeonLoft", "TestDriver"}; break;
             case "penguin":
-                files = new String[] {"Penguin","Group"}; break;
+                files = new String[] {"Penguin","Group", "TestDriver"}; break;
 
             // 2018
             case "ferry":
-                files = new String[] {"Ferry","Harbour"}; break;
+                files = new String[] {"Ferry","Harbour", "TestDriver"}; break;
             case "train-1":
             case "train-2":
-                files = new String[] {"Train","TrainStation"}; break;
+                files = new String[] {"Train","TrainStation", "TestDriver"}; break;
             case "bus-1":
             case "bus-2":
-                files = new String[] {"Bus","BusStation"}; break;
+                files = new String[] {"Bus","BusStation", "TestDriver"}; break;
             case "flight":
-                files = new String[] {"Flight","Airport"}; break;
+                files = new String[] {"Flight","Airport", "TestDriver"}; break;
 
             // 2019
             case "chapter":
-                files = new String[]{ "Chapter", "Book" }; break;
+                files = new String[]{ "Chapter", "Book", "TestDriver" }; break;
             case "cheese":
-                files = new String[]{ "Cheese", "Cooler" }; break;
+                files = new String[]{ "Cheese", "Cooler", "TestDriver" }; break;
             case "drink":
-                files = new String[]{ "Drink", "Refrigerator" }; break;
+                files = new String[]{ "Drink", "Refrigerator", "TestDriver" }; break;
             case "flower":
-                files = new String[]{ "Flower", "Bouquet" }; break;
+                files = new String[]{ "Flower", "Bouquet", "TestDriver" }; break;
             case "food":
-                files = new String[]{ "Food", "DeepFreezer" }; break;
+                files = new String[]{ "Food", "DeepFreezer", "TestDriver" }; break;
             case "fruit":
-                files = new String[]{ "Fruit", "Basket" }; break;
+                files = new String[]{ "Fruit", "Basket", "TestDriver" }; break;
             case "pearl":
-                files = new String[]{ "Pearl", "Necklace" }; break;
+                files = new String[]{ "Pearl", "Necklace", "TestDriver" }; break;
             case "photo":
-                files = new String[]{ "Photo", "Album" }; break;
+                files = new String[]{ "Photo", "Album", "TestDriver" }; break;
 
             // 2020
             case "cat":
-                files = new String[]{ "Cat", "Family" }; break;
+                files = new String[]{ "Cat", "Family", "TestDriver" }; break;
             case "dog":
-                files = new String[]{ "Dog", "Kennel" }; break;
+                files = new String[]{ "Dog", "Kennel", "TestDriver" }; break;
             case "elephant":
-                files = new String[]{ "Elephant", "Zoo" }; break;
+                files = new String[]{ "Elephant", "Zoo", "TestDriver" }; break;
             case "fox":
-                files = new String[]{ "Fox", "Island" }; break;
+                files = new String[]{ "Fox", "Island", "TestDriver" }; break;
             case "horse":
-                files = new String[]{ "Horse", "Farm" }; break;
+                files = new String[]{ "Horse", "Farm", "TestDriver" }; break;
             case "lion":
-                files = new String[]{ "Lion", "Savannah" }; break;
+                files = new String[]{ "Lion", "Savannah", "TestDriver" }; break;
             case "pet":
-                files = new String[]{ "Pet", "Child" }; break;
+                files = new String[]{ "Pet", "Child", "TestDriver" }; break;
             case "rabbit":
-                files = new String[]{ "Rabbit", "Boy" }; break;
+                files = new String[]{ "Rabbit", "Boy", "TestDriver" }; break;
             case "mouse":
-                files = new String[]{ "Mouse", "Girl" }; break;
+                files = new String[]{ "Mouse", "Girl", "TestDriver" }; break;
             case "pig":
-                files = new String[]{ "Pig", "Island" }; break;
+                files = new String[]{ "Pig", "Island", "TestDriver" }; break;
             case "sheep":
-                files = new String[]{ "Sheep", "Farm" }; break;
+                files = new String[]{ "Sheep", "Farm", "TestDriver" }; break;
             case "tiger":
-                files = new String[]{ "Tiger", "Forest" }; break;
+                files = new String[]{ "Tiger", "Forest", "TestDriver" }; break;
 
             // Videos
             case "phone":
-                files = new String[] {"Phone","WebShop"}; break;
+                files = new String[] {"Phone","WebShop", "TestDriver"}; break;
             case "pirate":
-                files = new String[] {"Pirate","PirateShip"}; break;
+                files = new String[] {"Pirate","PirateShip", "TestDriver"}; break;
             case "car":
-                files = new String[] {"Car","Store"}; break;
+                files = new String[] {"Car","Store", "TestDriver"}; break;
             case "turtle":
-                files = new String[] {"Turtle","Zoo"}; break;
+                files = new String[] {"Turtle","Zoo", "TestDriver"}; break;
 
             // Handins
             case "musician":
-                files = new String[] {"Musician", "Band"}; break;
+                files = new String[] {"Musician", "Band", "TestDriver"}; break;
             case "racer":
-                files = new String[] {"Racer", "FormulaOne"}; break;
+                files = new String[] {"Racer", "FormulaOne", "TestDriver"}; break;
             case "boat":
-                files = new String[] {"Boat", "Marina"}; break;
+                files = new String[] {"Boat", "Marina", "TestDriver"}; break;
             case "biker":
-                files = new String[] {"Biker", "MotorcycleClub"}; break;
+                files = new String[] {"Biker", "MotorcycleClub", "TestDriver"}; break;
             case "film":
-                files = new String[] {"Film", "FilmCollection"}; break;
+                files = new String[] {"Film", "FilmCollection", "TestDriver"}; break;
 
             case "cg1-1":
                 files = new String[] {"City"}; break;
@@ -411,6 +411,10 @@ public class TestServer {
 
         // Check all files and accumulate contents
         for(String file : files) {
+            if(file.equals("TestDriver") && !Files.exists(Paths.get(srcDir + "TestDriver.java"))) {
+                file = "Driver";
+            }
+            
             Path p = Paths.get(srcDir + file+".java");
             //handling for IntelliJ setup (aka file is stored in "<user.dir>/src")
             if (!Files.exists(p)) p = Paths.get("src", file + ".java");
@@ -418,7 +422,7 @@ public class TestServer {
             // Check if file exists
             if(Files.exists(p)) {
                 String str = new String(Files.readAllBytes(p), Charset.defaultCharset());
-                arguments.put(file.toLowerCase(), str);
+                arguments.put(file.equals("Driver") ? "testdriver" : file.toLowerCase(), str);
             } else {
                 String errMsg = "No file with this name '" + p.toRealPath().toString() + "'.";
                 System.err.println(errMsg);
