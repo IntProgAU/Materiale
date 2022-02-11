@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author  Nikolaj I. Schwartzbach & Asger Phillip Andersen
- * @version 2022-02-03
+ * @version 2022-02-11
  */
 public class TestServer {
     private static String srcDir = "";
@@ -411,6 +411,10 @@ public class TestServer {
 
         // Check all files and accumulate contents
         for(String file : files) {
+            if(file.equals("TestDriver") && !Files.exists(Paths.get(srcDir + "TestDriver.java"))) {
+                file = "Driver";
+            }
+            
             Path p = Paths.get(srcDir + file+".java");
             //handling for IntelliJ setup (aka file is stored in "<user.dir>/src")
             if (!Files.exists(p)) p = Paths.get("src", file + ".java");
@@ -418,7 +422,7 @@ public class TestServer {
             // Check if file exists
             if(Files.exists(p)) {
                 String str = new String(Files.readAllBytes(p), Charset.defaultCharset());
-                arguments.put(file.toLowerCase(), str);
+                arguments.put(file.equals("Driver") ? "testdriver" : file.toLowerCase(), str);
             } else {
                 String errMsg = "No file with this name '" + p.toRealPath().toString() + "'.";
                 System.err.println(errMsg);
