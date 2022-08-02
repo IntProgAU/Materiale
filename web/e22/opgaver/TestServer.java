@@ -30,7 +30,7 @@ public class TestServer {
      */
     public static void updateTestServer() {
         if(updateAvailable()) {
-            try (ReadableByteChannel rbc = Channels.newChannel(new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e21/opgaver/TestServer.java").openStream());
+            try (ReadableByteChannel rbc = Channels.newChannel(new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e22/opgaver/TestServer.java").openStream());
                  FileOutputStream fos = new FileOutputStream(srcDir + "TestServer.java")) {
                 fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
                 System.out.println("TestServeren er blevet opdateret :)");
