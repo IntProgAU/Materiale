@@ -68,7 +68,7 @@ public class TestServer {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu-MM-dd");
 
         try(InputStream local = new FileInputStream(new File(srcDir + "TestServer.java"));
-            InputStream online = (new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e21/opgaver/TestServer.java")).openStream()) {
+            InputStream online = (new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e22/opgaver/TestServer.java")).openStream()) {
             LocalDate localDate = LocalDate.parse(parseVersionDate(local), dtf);
             LocalDate onlineDate = LocalDate.parse(parseVersionDate(online), dtf);
 
@@ -454,7 +454,7 @@ public class TestServer {
     private static void downloadCourseFiles(String version, String... files)  {
         for(String file : files)
             try {
-                downloadFile("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e21/opgaver/"+version+"/"+file,file);
+                downloadFile("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e22/opgaver/"+version+"/"+file,file);
             } catch(IOException e){
                 System.err.println("Unable to download file: "+file+". Reason: "+e.getMessage());
             }
