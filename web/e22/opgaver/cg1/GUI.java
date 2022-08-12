@@ -106,7 +106,7 @@ public class GUI {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //Click on cities
-                System.out.println("Clicked at: " + e.getX() + ", " + e.getY());
+                //System.out.println("Clicked at: " + e.getX() + ", " + e.getY());
                 for(Country country : game.getCountries()){
                     for(City c : country.getCities()){
                         Point p = game.getPosition(c);
@@ -254,6 +254,7 @@ public class GUI {
      * @param speed The new speed of the game. 0 <= speed <= 4
      */
     public void setSpeed(int speed){
+        this.speed = speed;
         SwingUtilities.invokeLater(() -> {
             //Stop the game timer, and unselect all GUI buttons
             timer.stop();

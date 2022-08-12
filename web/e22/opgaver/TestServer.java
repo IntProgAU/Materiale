@@ -30,19 +30,19 @@ public class TestServer {
      */
     public static void updateTestServer() {
         if(updateAvailable()) {
-            try (ReadableByteChannel rbc = Channels.newChannel(new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e21/opgaver/TestServer.java").openStream());
+            try (ReadableByteChannel rbc = Channels.newChannel(new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e22/opgaver/TestServer.java").openStream());
                  FileOutputStream fos = new FileOutputStream(srcDir + "TestServer.java")) {
                 fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-                System.out.println("TestServeren er blevet opdateret :)");
+            JOptionPane.showMessageDialog(null, "Testserver filen er blevet opdateret. Genstart venligst BlueJ", "TestServer Opdatering", JOptionPane.INFORMATION_MESSAGE);
             } catch (FileNotFoundException e) {
-                System.out.println("Kan ikke overskrive den lokale fil.\nKontakt en adm. instruktor tak :)");
+                System.err.println("Kan ikke overskrive den lokale fil.\nKontakt en adm. instruktor tak :)");
             } catch(MalformedURLException e) {
-                System.out.println("Forkert URL...\nKontakt en adm. instruktor tak :)");
+                System.err.println("Forkert URL...\nKontakt en adm. instruktor tak :)");
             } catch (IOException e) {
-                System.out.println("FileOutputStream fejlede...\nKontakt en adm. instruktor tak :)");
+                System.err.println("FileOutputStream fejlede...\nKontakt en adm. instruktor tak :)");
             }
         } else {
-            System.out.println("Du har allerede den nyeste version af TestServeren");
+            JOptionPane.showMessageDialog(null, "Du har allerede den nyeste version af TestServer filen", "TestServer Opdatering", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -68,17 +68,17 @@ public class TestServer {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu-MM-dd");
 
         try(InputStream local = new FileInputStream(new File(srcDir + "TestServer.java"));
-            InputStream online = (new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e21/opgaver/TestServer.java")).openStream()) {
+            InputStream online = (new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e22/opgaver/TestServer.java")).openStream()) {
             LocalDate localDate = LocalDate.parse(parseVersionDate(local), dtf);
             LocalDate onlineDate = LocalDate.parse(parseVersionDate(online), dtf);
 
             return localDate.isBefore(onlineDate);
         } catch(MalformedURLException e) {
-            System.out.println("Forkert URL...\nKontakt en adm. instruktor tak :)");
+            System.err.println("Forkert URL...\nKontakt en adm. instruktor");
         } catch(FileNotFoundException e) {
-            System.out.println("Kan finde lokale fil.\nKontakt en adm. instruktor tak :)");
+            System.err.println("Kan ikke finde lokale fil.\nKontakt en adm. instruktor");
         } catch(IOException e) {
-            System.out.println("Kan ikke læse den lokale fil.\nKontakt en adm. instruktor tak :)");
+            System.err.println("Kan ikke læse den lokale fil.\nKontakt en adm. instruktor");
         }
 
         return false;
@@ -94,7 +94,7 @@ public class TestServer {
         String date = "";
         while(s.hasNextLine()) {
             String line = s.nextLine();
-            if(line.length() > 11 && line.substring(3, 11).equals("@version")) {
+            if(line.length() > 21 && line.substring(3, 11).equals("@version")) {
                 date = line.substring(12, 22);
                 break;
             }
@@ -111,8 +111,12 @@ public class TestServer {
      */
     public static void download(String exercise) throws IOException {
         if(updateAvailable()) {
-            updateTestServer();
-            System.out.println("Du havde ikke den nyeste version af testserveren, men den er blevet opdateret nu.\nPrøv igen, og genstart eventuelt BlueJ.");
+            int optionChosen = JOptionPane.showOptionDialog(null, "Der er en ny version af TestServer filen, vil du opdatere nu?\n(Dette er påkrævet for at kunne downloade nye filer)", "Opdater TestServer fil?", 
+                                JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            if (optionChosen == JOptionPane.YES_NO_OPTION) {
+                updateTestServer();
+            }
+
             return;
         }
 
@@ -144,8 +148,13 @@ public class TestServer {
      */
     public static void testAndOpenInBrowser(String exercise) throws IOException, URISyntaxException {
         if(updateAvailable()) {
-            updateTestServer();
-			System.out.println("Du havde ikke den nyeste version af testserveren, men den er blevet opdateret nu.\nPrøv igen, og genstart eventuelt BlueJ.");            return;
+            int optionChosen = JOptionPane.showOptionDialog(null, "Der er en ny version af TestServer filen, vil du opdatere nu?\n(Dette er påkrævet for at kunne teste opgaver)", "Opdater TestServer fil?", 
+                                JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            if (optionChosen == JOptionPane.YES_NO_OPTION) {
+                updateTestServer();
+            }
+
+            return;
         }
 
         String str = test(exercise);
@@ -161,8 +170,13 @@ public class TestServer {
      */
     public static String test(String exercise) throws IOException {
         if(updateAvailable()) {
-            updateTestServer();
-			System.out.println("Du havde ikke den nyeste version af testserveren, men den er blevet opdateret nu.\nPrøv igen, og genstart eventuelt BlueJ.");            return "";
+            int optionChosen = JOptionPane.showOptionDialog(null, "Der er en ny version af TestServer filen, vil du opdatere nu?\n(Dette er påkrævet for at kunne teste opgaver)", "Opdater TestServer fil?", 
+                                JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            if (optionChosen == JOptionPane.YES_NO_OPTION) {
+                updateTestServer();
+            }
+
+            return "";
         }
 
         String ex = exercise.toLowerCase();
@@ -454,7 +468,7 @@ public class TestServer {
     private static void downloadCourseFiles(String version, String... files)  {
         for(String file : files)
             try {
-                downloadFile("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e21/opgaver/"+version+"/"+file,file);
+                downloadFile("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e22/opgaver/"+version+"/"+file,file);
             } catch(IOException e){
                 System.err.println("Unable to download file: "+file+". Reason: "+e.getMessage());
             }
