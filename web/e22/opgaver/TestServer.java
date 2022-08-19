@@ -17,7 +17,11 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author  Nikolaj I. Schwartzbach & Asger Phillip Andersen
+<<<<<<< HEAD
  * @version 2022-08-20
+=======
+ * @version 2022-08-19
+>>>>>>> 3ebaa85fe22e00a23ae05822b92f26a6ed51cec3
  */
 public class TestServer {
     private static String srcDir = "";
