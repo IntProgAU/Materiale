@@ -17,11 +17,7 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author  Nikolaj I. Schwartzbach & Asger Phillip Andersen
-<<<<<<< HEAD
- * @version 2022-08-20
-=======
- * @version 2022-08-19
->>>>>>> 3ebaa85fe22e00a23ae05822b92f26a6ed51cec3
+ * @version 2022-09-01
  */
 public class TestServer {
     private static String srcDir = "";
@@ -420,7 +416,7 @@ public class TestServer {
 
         // Set meta information
         arguments.put("h",ex.replace("dc3-1","dc3a").replace("dc3-4","dc3b").replace("dc4-1","dc4a").replace("dc4-2","dc4b").replace("dc4-3","dc4c"));
-        arguments.put("auID",auID);
+        arguments.put("auID",auID.toLowerCase());
         arguments.put("code",code);
 
         // Check all files and accumulate contents
