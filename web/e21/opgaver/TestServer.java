@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author  Nikolaj I. Schwartzbach & Asger Phillip Andersen
- * @version 2022-02-11
+ * @version 2022-09-01
  */
 public class TestServer {
     private static String srcDir = "";
@@ -31,18 +31,18 @@ public class TestServer {
     public static void updateTestServer() {
         if(updateAvailable()) {
             try (ReadableByteChannel rbc = Channels.newChannel(new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e22/opgaver/TestServer.java").openStream());
-                 FileOutputStream fos = new FileOutputStream(srcDir + "TestServer.java")) {
+            FileOutputStream fos = new FileOutputStream(srcDir + "TestServer.java")) {
                 fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-                System.out.println("TestServeren er blevet opdateret :)");
+                JOptionPane.showMessageDialog(null, "Testserver filen er blevet opdateret. Genstart venligst BlueJ", "TestServer Opdatering", JOptionPane.INFORMATION_MESSAGE);
             } catch (FileNotFoundException e) {
-                System.out.println("Kan ikke overskrive den lokale fil.\nKontakt en adm. instruktor tak :)");
+                System.err.println("Kan ikke overskrive den lokale fil.\nKontakt en adm. instruktor tak :)");
             } catch(MalformedURLException e) {
-                System.out.println("Forkert URL...\nKontakt en adm. instruktor tak :)");
+                System.err.println("Forkert URL...\nKontakt en adm. instruktor tak :)");
             } catch (IOException e) {
-                System.out.println("FileOutputStream fejlede...\nKontakt en adm. instruktor tak :)");
+                System.err.println("FileOutputStream fejlede...\nKontakt en adm. instruktor tak :)");
             }
         } else {
-            System.out.println("Du har allerede den nyeste version af TestServeren");
+            JOptionPane.showMessageDialog(null, "Du har allerede den nyeste version af TestServer filen", "TestServer Opdatering", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -68,17 +68,17 @@ public class TestServer {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu-MM-dd");
 
         try(InputStream local = new FileInputStream(new File(srcDir + "TestServer.java"));
-            InputStream online = (new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e21/opgaver/TestServer.java")).openStream()) {
+        InputStream online = (new URL("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e22/opgaver/TestServer.java")).openStream()) {
             LocalDate localDate = LocalDate.parse(parseVersionDate(local), dtf);
             LocalDate onlineDate = LocalDate.parse(parseVersionDate(online), dtf);
 
             return localDate.isBefore(onlineDate);
         } catch(MalformedURLException e) {
-            System.out.println("Forkert URL...\nKontakt en adm. instruktor tak :)");
+            System.err.println("Forkert URL...\nKontakt en adm. instruktor");
         } catch(FileNotFoundException e) {
-            System.out.println("Kan finde lokale fil.\nKontakt en adm. instruktor tak :)");
+            System.err.println("Kan ikke finde lokale fil.\nKontakt en adm. instruktor");
         } catch(IOException e) {
-            System.out.println("Kan ikke læse den lokale fil.\nKontakt en adm. instruktor tak :)");
+            System.err.println("Kan ikke læse den lokale fil.\nKontakt en adm. instruktor");
         }
 
         return false;
@@ -94,7 +94,7 @@ public class TestServer {
         String date = "";
         while(s.hasNextLine()) {
             String line = s.nextLine();
-            if(line.length() > 11 && line.substring(3, 11).equals("@version")) {
+            if(line.length() > 21 && line.substring(3, 11).equals("@version")) {
                 date = line.substring(12, 22);
                 break;
             }
@@ -111,8 +111,12 @@ public class TestServer {
      */
     public static void download(String exercise) throws IOException {
         if(updateAvailable()) {
-            updateTestServer();
-            System.out.println("Du havde ikke den nyeste version af testserveren, men den er blevet opdateret nu.\nPrøv igen, og genstart eventuelt BlueJ.");
+            int optionChosen = JOptionPane.showOptionDialog(null, "Der er en ny version af TestServer filen, vil du opdatere nu?\n(Dette er påkrævet for at kunne downloade nye filer)", "Opdater TestServer fil?", 
+                    JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            if (optionChosen == JOptionPane.YES_NO_OPTION) {
+                updateTestServer();
+            }
+
             return;
         }
 
@@ -122,15 +126,15 @@ public class TestServer {
 
             case "cg1":
                 downloadCourseFiles("cg1","Game.java","GUI.java",
-                        "Settings.java","Player.java","GUIPlayer.java","RandomPlayer.java",
-                        "GreedyPlayer.java","SmartPlayer.java","CGTest.java",
-                        "network.dat","map.png","greedyplayer.png","randomplayer.png",
-                        "smartplayer.png","guiplayer.png");
+                    "Settings.java","Player.java","GUIPlayer.java","RandomPlayer.java",
+                    "GreedyPlayer.java","SmartPlayer.java","CGTest.java",
+                    "network.dat","map.png","greedyplayer.png","randomplayer.png",
+                    "smartplayer.png","guiplayer.png");
                 break;
             case "cg3":
                 downloadCourseFiles("cg3","Game.java","GUI.java",
-                        "Player.java","RandomPlayer.java",
-                        "GreedyPlayer.java","SmartPlayer.java");
+                    "Player.java","RandomPlayer.java",
+                    "GreedyPlayer.java","SmartPlayer.java");
                 break;
             case "cg5":
                 downloadCourseFiles("cg5","LogPlayer.java","Game.java","Settings.java");
@@ -143,11 +147,6 @@ public class TestServer {
      * @param exercise   Short name of exercise.
      */
     public static void testAndOpenInBrowser(String exercise) throws IOException, URISyntaxException {
-        if(updateAvailable()) {
-            updateTestServer();
-			System.out.println("Du havde ikke den nyeste version af testserveren, men den er blevet opdateret nu.\nPrøv igen, og genstart eventuelt BlueJ.");            return;
-        }
-
         String str = test(exercise);
         if(str.contains("Link: ")){
             str = str.substring(str.indexOf("Link: ")+6);
@@ -160,9 +159,20 @@ public class TestServer {
      * @param exercise   Short name of exercise.
      */
     public static String test(String exercise) throws IOException {
+        if (!isAlive()) {
+            JOptionPane.showMessageDialog(null, "Testserveren er desværre nede. Prøv igen senere, og skriv eventuelt på diskussionsforummet, hvis der ikke allerede er gjort det.", "TestServer nede", JOptionPane.ERROR_MESSAGE);
+            
+            return "";
+        }
+        
         if(updateAvailable()) {
-            updateTestServer();
-			System.out.println("Du havde ikke den nyeste version af testserveren, men den er blevet opdateret nu.\nPrøv igen, og genstart eventuelt BlueJ.");            return "";
+            int optionChosen = JOptionPane.showOptionDialog(null, "Der er en ny version af TestServer filen, vil du opdatere nu?\n(Dette er påkrævet for at kunne teste opgaver)", "Opdater TestServer fil?", 
+                    JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            if (optionChosen == JOptionPane.YES_NO_OPTION) {
+                updateTestServer();
+            }
+
+            return "";
         }
 
         String ex = exercise.toLowerCase();
@@ -170,7 +180,7 @@ public class TestServer {
         String[] files = null;
         switch(ex) {
 
-            // DieCup
+                // DieCup
             case "dc1":
                 files = new String[] {"Die","DieCup"}; break;
             case "dc2":
@@ -183,12 +193,12 @@ public class TestServer {
             case "dc4-3":
                 files = new String[] {"Game"}; break;
 
-            // Turtle
+                // Turtle
             case "turtle1":
             case "turtle2":
                 files = new String[] {"Actor", "Canvas", "Turtle"}; break;
 
-            // 2016
+                // 2016
             case "basketplayer":
                 files = new String[] {"BasketPlayer","BasketTeam", "TestDriver"}; break;
             case "cow":
@@ -213,7 +223,7 @@ public class TestServer {
             case "song":
                 files = new String[] {"Song","DVD", "TestDriver"}; break;
 
-            // 2017
+                // 2017
             case "animal":
                 files = new String[] {"Animal","Zoo", "TestDriver"}; break;
             case "brick-1":
@@ -239,7 +249,7 @@ public class TestServer {
             case "penguin":
                 files = new String[] {"Penguin","Group", "TestDriver"}; break;
 
-            // 2018
+                // 2018
             case "ferry":
                 files = new String[] {"Ferry","Harbour", "TestDriver"}; break;
             case "train-1":
@@ -251,7 +261,7 @@ public class TestServer {
             case "flight":
                 files = new String[] {"Flight","Airport", "TestDriver"}; break;
 
-            // 2019
+                // 2019
             case "chapter":
                 files = new String[]{ "Chapter", "Book", "TestDriver" }; break;
             case "cheese":
@@ -269,7 +279,7 @@ public class TestServer {
             case "photo":
                 files = new String[]{ "Photo", "Album", "TestDriver" }; break;
 
-            // 2020
+                // 2020
             case "cat":
                 files = new String[]{ "Cat", "Family", "TestDriver" }; break;
             case "dog":
@@ -295,7 +305,7 @@ public class TestServer {
             case "tiger":
                 files = new String[]{ "Tiger", "Forest", "TestDriver" }; break;
 
-            // Videos
+                // Videos
             case "phone":
                 files = new String[] {"Phone","WebShop", "TestDriver"}; break;
             case "pirate":
@@ -305,7 +315,7 @@ public class TestServer {
             case "turtle":
                 files = new String[] {"Turtle","Zoo", "TestDriver"}; break;
 
-            // Handins
+                // Handins
             case "musician":
                 files = new String[] {"Musician", "Band", "TestDriver"}; break;
             case "racer":
@@ -387,10 +397,10 @@ public class TestServer {
             Scanner s = new Scanner(System.in);
 
             System.out.print("Første gang du uploader et projekt til testserveren skal du indtaste dit auID og en adgangskode.\n" +
-                    "Begge dele huskes i din projektmappe, således at du ikke behøver at indtaste dem ved senere uploads af projektet.\n\n" +
-                    "Du kan skaffe dig en adgangskode via linket: https://dintprog.cs.au.dk/reset.php\n\n" +
-                    "Det er samme adgangskode, der anvendes til quizserveren og til testserveren.\n\n" +
-                    "Indtast auID: \n> ");
+                "Begge dele huskes i din projektmappe, således at du ikke behøver at indtaste dem ved senere uploads af projektet.\n\n" +
+                "Du kan skaffe dig en adgangskode via linket: https://dintprog.cs.au.dk/reset.php\n\n" +
+                "Det er samme adgangskode, der anvendes til quizserveren og til testserveren.\n\n" +
+                "Indtast auID: \n> ");
 
             auID = s.nextLine();
             System.out.print("\nIndtast adgangskode: \n> ");
@@ -406,7 +416,7 @@ public class TestServer {
 
         // Set meta information
         arguments.put("h",ex.replace("dc3-1","dc3a").replace("dc3-4","dc3b").replace("dc4-1","dc4a").replace("dc4-2","dc4b").replace("dc4-3","dc4c"));
-        arguments.put("auID",auID);
+        arguments.put("auID",auID.toLowerCase());
         arguments.put("code",code);
 
         // Check all files and accumulate contents
@@ -414,7 +424,7 @@ public class TestServer {
             if(file.equals("TestDriver") && !Files.exists(Paths.get(srcDir + "TestDriver.java"))) {
                 file = "Driver";
             }
-            
+
             Path p = Paths.get(srcDir + file+".java");
             //handling for IntelliJ setup (aka file is stored in "<user.dir>/src")
             if (!Files.exists(p)) p = Paths.get("src", file + ".java");
@@ -454,7 +464,7 @@ public class TestServer {
     private static void downloadCourseFiles(String version, String... files)  {
         for(String file : files)
             try {
-                downloadFile("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e21/opgaver/"+version+"/"+file,file);
+                downloadFile("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e22/opgaver/"+version+"/"+file,file);
             } catch(IOException e){
                 System.err.println("Unable to download file: "+file+". Reason: "+e.getMessage());
             }
@@ -498,7 +508,7 @@ public class TestServer {
         StringJoiner sj = new StringJoiner("&");
         for(Map.Entry<String,String> entry : arguments.entrySet())
             sj.add(URLEncoder.encode(entry.getKey(), "UTF-8") + "="
-                    + URLEncoder.encode(entry.getValue(), "UTF-8"));
+                + URLEncoder.encode(entry.getValue(), "UTF-8"));
         byte[] out = sj.toString().getBytes(StandardCharsets.UTF_8);
         int length = out.length;
         http.setFixedLengthStreamingMode(length);
@@ -523,5 +533,32 @@ public class TestServer {
 
     private static void setSrcDir() {
         srcDir = Files.isDirectory(Paths.get("src")) ? "src/" : "";
+    }
+
+    private static boolean isAlive() throws IOException {
+        URL obj = new URL("https://dintprog.cs.au.dk/alive.php");
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("GET");
+        con.setRequestProperty("User-Agent", "Java client");
+        int responseCode = con.getResponseCode();
+        //System.out.println("GET Response Code :: " + responseCode);
+        if (responseCode == HttpURLConnection.HTTP_OK) { // success
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                        con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            String status = response.toString();
+            return "oppe".equals(response.toString());
+        }
+        else {
+            System.err.println("Serveren svarede ikke. Kontakt en adm. instruktor");
+            return false;
+        }
     }
 }
