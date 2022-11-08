@@ -84,10 +84,8 @@ public class TestServer {
             return true;
         } finally {
             // Return true to restrict depending functions from continuing their work
-            //return true;
+            return false;
         }
-
-        return false;
     }
 
     /**
