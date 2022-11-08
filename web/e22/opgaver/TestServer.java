@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author  Nikolaj I. Schwartzbach & Asger Phillip Andersen
- * @version 2022-09-01
+ * @version 2022-11-08
  */
 public class TestServer {
     private static String srcDir = "";
@@ -76,9 +76,12 @@ public class TestServer {
         } catch(MalformedURLException e) {
             System.err.println("Forkert URL...\nKontakt en adm. instruktor");
         } catch(FileNotFoundException e) {
-            System.err.println("Kan ikke finde lokale fil.\nKontakt en adm. instruktor");
+            System.err.println("Kan ikke finde den lokale fil.\nKontakt en adm. instruktor");
         } catch(IOException e) {
             System.err.println("Kan ikke læse den lokale fil.\nKontakt en adm. instruktor");
+        } finally {
+            // Return true to restrict depending functions from continuing their work
+            return true;
         }
 
         return false;
