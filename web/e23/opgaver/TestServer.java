@@ -17,10 +17,11 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author Nikolaj I. Schwartzbach & Asger Phillip Andersen
- * @version 2023-08-12
+ * @version 2023-08-25
  */
 public class TestServer {
     private static String srcDir = "";
+    private static final String testServerOnlinePath = "https://DeadViolets.github.io/IntProg-undervisningsmateriale/web/e23/opgaver/";
 
     private TestServer() {
     }
@@ -35,7 +36,7 @@ public class TestServer {
         String messageDialogHeader = "TestServer-Klient Opdatering";
         if (updateAvailable()) {
             try (ReadableByteChannel rbc = Channels.newChannel(new URL(
-                    "https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e23/opgaver/TestServer.java")
+                    testServerOnlinePath + "TestServer.java")
                     .openStream());
                     FileOutputStream fos = new FileOutputStream(srcDir + "TestServer.java")) {
                 fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
@@ -90,7 +91,7 @@ public class TestServer {
 
         try (InputStream local = new FileInputStream(new File(srcDir + "TestServer.java"));
                 InputStream online = (new URL(
-                        "https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e22/opgaver/TestServer.java"))
+                        testServerOnlinePath + "TestServer.java"))
                         .openStream()) {
             LocalDate localDate = LocalDate.parse(parseVersionDate(local), dtf);
             LocalDate onlineDate = LocalDate.parse(parseVersionDate(online), dtf);
@@ -599,7 +600,7 @@ public class TestServer {
     private static void downloadCourseFiles(String version, String... files) {
         for (String file : files)
             try {
-                downloadFile("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e22/opgaver/"
+                downloadFile(testServerOnlinePath
                         + version + "/" + file, file);
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null,

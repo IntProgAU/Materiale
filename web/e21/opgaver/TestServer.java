@@ -33,7 +33,7 @@ public class TestServer {
     public static void updateTestServer() {
         if (updateAvailable()) {
             try (ReadableByteChannel rbc = Channels.newChannel(new URL(
-                    "https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e23/opgaver/TestServer.java")
+                    "https://DeadViolets.github.io/IntProg-undervisningsmateriale/web/e23/opgaver/TestServer.java")
                     .openStream());
                     FileOutputStream fos = new FileOutputStream(srcDir + "TestServer.java")) {
                 fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
@@ -76,7 +76,7 @@ public class TestServer {
 
         try (InputStream local = new FileInputStream(new File(srcDir + "TestServer.java"));
                 InputStream online = (new URL(
-                        "https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e22/opgaver/TestServer.java"))
+                        "https://DeadViolets.github.io/IntProg-undervisningsmateriale/web/e22/opgaver/TestServer.java"))
                         .openStream()) {
             LocalDate localDate = LocalDate.parse(parseVersionDate(local), dtf);
             LocalDate onlineDate = LocalDate.parse(parseVersionDate(online), dtf);
@@ -571,7 +571,7 @@ public class TestServer {
     private static void downloadCourseFiles(String version, String... files) {
         for (String file : files)
             try {
-                downloadFile("https://adamkjelstroem.github.io/IntProg-undervisningsmateriale/web/e22/opgaver/"
+                downloadFile("https://DeadViolets.github.io/IntProg-undervisningsmateriale/web/e22/opgaver/"
                         + version + "/" + file, file);
             } catch (IOException e) {
                 System.err.println("Unable to download file: " + file + ". Reason: " + e.getMessage());
