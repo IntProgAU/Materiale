@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author Nikolaj I. Schwartzbach & Asger Phillip Andersen
- * @version 2023-11-21
+ * @version 2023-11-22
  */
 public class TestServer {
     private static String srcDir = "";
@@ -110,9 +110,9 @@ public class TestServer {
                         errMsg,
                         messageDialogHeader, JOptionPane.ERROR_MESSAGE);
                 System.err.println(errMsg);
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
     }
 
