@@ -110,10 +110,9 @@ public class TestServer {
                         errMsg,
                         messageDialogHeader, JOptionPane.ERROR_MESSAGE);
                 System.err.println(errMsg);
-                return false;
             }
-            return true;
         }
+        return false;
     }
 
     /**
