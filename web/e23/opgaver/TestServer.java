@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
  * If we cannot reproduce it, we cannot fix it.
  *
  * @author Nikolaj I. Schwartzbach & Asger Phillip Andersen
- * @version 2023-08-25
+ * @version 2023-11-21
  */
 public class TestServer {
     private static String srcDir = "";
@@ -485,7 +485,8 @@ public class TestServer {
                 files = new String[] { "City", "CityTest" };
                 break;
             case "cg3":
-                files = new String[] { "City", "BorderCity", "BorderCityTest", "CapitalCity", "CapitalCityTest",
+                files = new String[] { "City", "CityTest", "BorderCity", "BorderCityTest", "CapitalCity",
+                        "CapitalCityTest",
                         "MafiaCountry", "MafiaCountryTest" };
                 break;
 
