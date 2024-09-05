@@ -221,8 +221,9 @@ public class Game {
      * Assigns random positions to all players.
      */
     public void reset(boolean resetSeed) {
-    	if(resetSeed){
-        	seed = random.nextInt(Integer.MAX_VALUE);
+        if(resetSeed){
+            seed = random.nextInt(Integer.MAX_VALUE);
+            removeLogPlayer();
         }
         random = new Random(seed);
         log = new Log(seed, settings);
@@ -426,14 +427,15 @@ public class Game {
         for(Player p : players){
             if(!(p instanceof LogPlayer))
                 newPlayers.add(p);
-            if(p.getClass() == Player.class)
+            if(p.getClass() == GUIPlayer.class){
                 seenGUIPlayer = true;
-        }
-        if(!seenGUIPlayer){
-            guiPlayer = new GUIPlayer(guiPlayer.getPosition());
-            newPlayers.add(guiPlayer);
+            }
         }
         players = newPlayers;
+        if(!seenGUIPlayer){
+            GUIPlayer newGuiPlayer = new GUIPlayer(guiPlayer.getPosition());
+            setGUIPlayer(newGuiPlayer);
+        }
         Collections.sort(players);
     }
 }
