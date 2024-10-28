@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class TestServer {
     private static String srcDir = "";
-    private static final String testServerOnlinePath = "https://DeadViolets.github.io/IntProg-undervisningsmateriale/web/e23/opgaver/";
+    private static final String testServerOnlinePath = "https://intprogau.github.io/Materiale/web/e24/opgaver/";
 
     private TestServer() {
     }
