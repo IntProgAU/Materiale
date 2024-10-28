@@ -20,7 +20,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * Keyboard controls and <space> to turnAround.
  * 
  * @author Nikolaj Ignatieff Schwartzbach
- * @version 1.1.0
+ * @version 1.1.1
  *
  */
 public class GUI {
