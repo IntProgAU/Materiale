@@ -946,7 +946,11 @@ class WorldPanel extends JPanel {
 
         g2d.scale(0.5,0.5);
         g2d.rotate(dt,x$,y$);
-        g2d.drawImage(playerIcons.get(p.getClass().getName()),x$-22+(mirror==1?0:64),y$-28,64*mirror,32,null);
+        String player = p.getClass().getName();
+        if(player.equals("LogPlayer")){
+            player = "GUIPlayer";
+        }
+        g2d.drawImage(playerIcons.get(player),x$-22+(mirror==1?0:64),y$-28,64*mirror,32,null);
         g2d.rotate(-dt,x$,y$);
         g2d.scale(2.0,2.0);
     }
